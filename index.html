@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="output.css">
+    <script type="module" src=".js/ui.js" defer></script>
+</head>
+<body>
+    <section id="container">
+        <section id="wrapper">
+            <header>
+                <h1 id="title-page" class="text-2xl p-6 text-center">Welcome back Ronal</h1>
+            </header>
+            <section id="input-data" class="">
+                <form id="input-form" action="" autocomplete="off">
+                    <section id="id-section">
+                        <label for="id" id="id-label">ID : </label>
+                        <input type="number" id="id-input" required minlength="1" maxlength="1000" class="border border-green-400">
+                    </section>
+                    <section id="trans-section">
+                        <label for="transaction-name" id="name-label">Transaction Name : </label>
+                        <input type="text" id="trans-input" required class="border border-green-400">
+                    </section>
+                    <section id="type-section">
+                        <label for="type" id="type-label">Type : </label>
+                        <input type="text" id="type-input" placeholder="Income or Outcome" required class="border border-green-400">
+                    </section>
+                    <section id="category-section">
+                        <label for="category" id="category-label">Category : </label>
+                        <input type="text" id="category-input" required class="border border-green-400">
+                    </section>
+                    <section id="nominal-section">
+                        <label for="nominal" id="nominal-label">Nominal : </label>
+                        <input type="number" inputmode="numeric" id="nominal-input" required class="border border-green-400">
+                    </section>
+                    <section id="date-section">
+                        <label for="date" id="date-label">Date : </label>
+                        <input type="date" id="date-input" required class="border border-green-400">
+                    </section>
+                </form> 
+                <!-- <section id="save-section"> -->
+                    <button type="button" class="bg-emerald-500" id="save-button">Save Transactions</button>
+                <!-- </section> -->
+            </section>
+
+            <section id="dashboard-section" class="h-96 flex items-center justify-center gap-5">
+                <section id="dashboard-wrapper" class="flex justify-center"></section>
+                    <section id="list-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
+                        <section id="list-thumb-content" class="p-6">
+                            <p id="title-list">List of data</p>
+                            <a id="to-list" href="#" class="hover:bg-emerald-600 hover:text-white">More </a>
+                        </section>
+                    </section>
+                    <section id="add-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
+                        <section id="add-thumb-content" class="p-6">
+                            <p id="title-add">Add income and outcome transaction</p>
+                            <a id="to-add" href="#" class="hover:bg-emerald-600 hover:text-white">Add</a>
+                        </section>
+                    </section>
+                    <!-- <section id="edit-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
+                        <section id="edit-data-thumb-content" class="p-6">
+                            <p id="title-edit">Update our transactions to the most recent one</p>
+                            <a id="to-edit" href="#" class="hover:bg-emerald-600 hover:text-white">Edit</a>
+                        </section>
+                    </section>
+                    <section id="delete-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
+                        <section id="delete-data-thumb-content" class="p-6">
+                            <p id="title-delete">Delete your unnecessary transactions</p>
+                            <a id="to-delete" href="#" class="hover:bg-emerald-600 hover:text-white">Delete</a>
+                        </section>
+                    </section> -->
+                </section>
+            </section>
+
+            <!-- Prototype Data Section -->
+             <!-- Flow nya logically mengikuti jumlah data yang ada -->
+            <section id="list-data-section" class="">
+                <section id="list-data-wrapper" class="mb-20 p-6">
+                </section>
+            </section>
+        </section>
+    </section>
+</body>
+</html>
