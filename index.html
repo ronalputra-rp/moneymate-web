@@ -13,8 +13,15 @@
             <header>
                 <h1 id="title-page" class="text-2xl p-6 text-center">Welcome back Ronal</h1>
             </header>
-            <section id="input-data" class="">
-                <form id="input-form" action="" autocomplete="off">
+            <section id="balance-section" class="hidden">
+                <label for="balance" id="balance-label">Balance : </label>
+                <input type="number" id="balance-input" placeholder="Input your balance first" required minlength="500" maxlength="1000000000000" class="border border-green-400">
+                <button type="button" class="bg-emerald-500" id="balance-button">Save data</button>
+            </section>
+            <section id="balance-wrapper" class="">
+            </section>
+            <section id="input-data" class="hidden">
+                <form id="input-form" class="hidden" action="" autocomplete="off">
                     <section id="id-section">
                         <label for="id" id="id-label">ID : </label>
                         <input type="number" id="id-input" required minlength="1" maxlength="1000" class="border border-green-400">
@@ -47,37 +54,43 @@
 
             <section id="dashboard-section" class="h-96 flex items-center justify-center gap-5">
                 <section id="dashboard-wrapper" class="flex justify-center"></section>
+                    <section id="balance-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
+                        <section id="balance-thumb-content" class="p-6">
+                            <p id="title-balance">Add your balance first</p>
+                            <a id="to-balance" href="#balance-wrapper" class="hover:bg-emerald-600 hover:text-white">Add</a>
+                        </section>
+                    </section>
                     <section id="list-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
                         <section id="list-thumb-content" class="p-6">
                             <p id="title-list">List of data</p>
-                            <a id="to-list" href="#" class="hover:bg-emerald-600 hover:text-white">More </a>
+                            <a id="to-list" href="#" class="hover:bg-emerald-600 hover:text-white">More</a>
                         </section>
                     </section>
                     <section id="add-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
                         <section id="add-thumb-content" class="p-6">
                             <p id="title-add">Add income and outcome transaction</p>
-                            <a id="to-add" href="#" class="hover:bg-emerald-600 hover:text-white">Add</a>
+                            <a id="to-add" href="#input-form" class="hover:bg-emerald-600 hover:text-white">Add</a>
                         </section>
                     </section>
-                    <!-- <section id="edit-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
-                        <section id="edit-data-thumb-content" class="p-6">
-                            <p id="title-edit">Update our transactions to the most recent one</p>
-                            <a id="to-edit" href="#" class="hover:bg-emerald-600 hover:text-white">Edit</a>
+                    <section id="auto-summarize-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
+                        <section id="summarize-thumb-content" class="p-6">
+                            <p id="title-summarize">Auto Summarize</p>
+                            <a id="to-summarize" href="#" class="hover:bg-emerald-600 hover:text-white">Summarize all your transaction into the report</a>
                         </section>
                     </section>
-                    <section id="delete-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
-                        <section id="delete-data-thumb-content" class="p-6">
-                            <p id="title-delete">Delete your unnecessary transactions</p>
-                            <a id="to-delete" href="#" class="hover:bg-emerald-600 hover:text-white">Delete</a>
-                        </section>
-                    </section> -->
                 </section>
             </section>
 
             <!-- Prototype Data Section -->
              <!-- Flow nya logically mengikuti jumlah data yang ada -->
             <section id="list-data-section" class="">
-                <section id="list-data-wrapper" class="mb-20 p-6">
+                <section id="list-data-wrapper" class="mb-20 p-6 hidden">
+                </section>
+            </section>
+
+            <section id="summary-section" class="">
+                <section id="summary-wrapper" class="mb-20 p-6">
+                    
                 </section>
             </section>
         </section>
