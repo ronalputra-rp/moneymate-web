@@ -18,7 +18,7 @@ export function addTransactions (transactions) {
 
 export function editTransactions (id, newData) {
     dataTransactions = dataTransactions.map((n) => {
-        if (n.ID === id) {
+        if (n.id === id) {
             return {
                 ...n,
                 ...newData
@@ -29,12 +29,12 @@ export function editTransactions (id, newData) {
 }
 
 export function deleteTransactions (id) {
-    dataTransactions = dataTransactions.filter((n) => n.ID !== id);
+    dataTransactions = dataTransactions.filter((n) => n.id !== id);
     return dataTransactions;
 }
 
 export function getTransactions (id) {
-    const getData = dataTransactions.find((x) => x.ID === id);
+    const getData = dataTransactions.find((x) => x.id === id);
     return getData;
 }
 
