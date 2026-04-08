@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="output.css">
-    <script type="module" src=".js/ui.js" defer></script>
 </head>
-<body>
+<body class="bg-black text-white">
     <section id="container">
         <section id="wrapper">
             <header>
@@ -84,7 +83,13 @@
             <!-- Prototype Data Section -->
              <!-- Flow nya logically mengikuti jumlah data yang ada -->
             <section id="list-data-section" class="">
-                <section id="list-data-wrapper" class="mb-20 p-6 hidden">
+                <button type="button" id="filter-button" class="bg-emerald-600 text-white p-4 rounded-xl hover:cursor-pointer">filter</button>
+                    <section id="filter-section" class="invisible">
+                        <button type="button" id="filter-content-1" class="hover:bg-emerald-600">Income</button>
+                        <button type="button" id="filter-content-2" class="hover:bg-emerald-600">Outcome</button>
+                        <button type="button" id="filter-content-3" class="hover:bg-emerald-600">Category</button>
+                    </section>
+                <section id="list-data-wrapper" class="mb-20 p-6">
                 </section>
             </section>
 
@@ -95,5 +100,6 @@
             </section>
         </section>
     </section>
+    <script type="module" src=".js/ui.js"></script>
 </body>
 </html>
