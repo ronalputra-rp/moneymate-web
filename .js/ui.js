@@ -90,7 +90,6 @@ function renderBalance() {
         balanceOutputWrap.remove();
         deleteBalanceController();
     })
-    // besok buat auto summarize dan design UI kalau sempat
 } 
 
 balanceButton.addEventListener("click",(e) => {
@@ -111,7 +110,7 @@ function handleSave(e) {
     const nominal = nominalInput.value.trim();
     const date = dateInput.value.trim();
     const data = {
-        ID:id,
+        id:id,
         transactionName:transactionName,
         type:typeTransactions,
         category:category,
@@ -144,7 +143,7 @@ function addRenderResult() {
     }
 
     for (let i = 0; i < transactionsData.length; i++ ) {
-        const idResult = transactionsData[i].ID;
+        const idResult = transactionsData[i].id;
         const nameResult = transactionsData[i].transactionName;
         const typeResult = transactionsData[i].type;
         const categoryResult = transactionsData[i].category;
@@ -155,7 +154,6 @@ function addRenderResult() {
         const dateDisplay = dateParse.toLocaleDateString(`id-ID`,options);
 
         const createResultSection = document.createElement("section");
-        createResultSection.id = `transaction`;
         createResultSection.className = "data-trans rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
         wrapperRenderTransaction.appendChild(createResultSection);
         const createRenderSection = document.createElement("section");
@@ -164,16 +162,22 @@ function addRenderResult() {
         createResultSection.appendChild(createRenderSection);
         const getResultSection = document.getElementById(`transaction-${idResult}`);
         const idRenderSection = document.createElement("p");
+        idRenderSection.id = "id-result"
         idRenderSection.textContent = `ID : ${idResult}`;
         const nameSection = document.createElement("p");
+        nameSection.id = "name-result"
         nameSection.textContent = `Transcations Name : ${nameResult}`;
         const typeSection = document.createElement("p");
+        typeSection.className = "type-result";
         typeSection.textContent = `Type : ${typeResult}`;
         const categorySection = document.createElement("p");
+        categorySection.id = "category-result";
         categorySection.textContent = `Category : ${categoryResult}`;
         const nominalSection = document.createElement("p");
+        nominalSection.id = "nominal-result";
         nominalSection.textContent = `Nominal : ${nominalDisplay}`;
         const dateSection = document.createElement("p");
+        dateSection.id = "date-result";
         dateSection.textContent = `Date : ${dateDisplay}`;
         const addEditButton = document.createElement("button");
         addEditButton.dataset.id = `${idResult}`;
@@ -197,6 +201,137 @@ function addRenderResult() {
     }
 }
 
+
+function filterOutput() {
+    console.log(transactionsData);
+    // const filteringCategory = transactionsData.filter() coming soon
+    const dataTrans = document.getElementsByClassName("type-result");
+    console.log(dataTrans);
+}
+
+function filterOperation() {
+    let options = {
+        weekday:'long',
+        year:'numeric',
+        month:'long',
+        day:'numeric'
+    }
+    const filteringIncome = transactionsData.filter(x => x.type === "Income");
+    const filteringOutcome = transactionsData.filter(x => x.type === "Outcome");
+    const filterIncome = document.getElementById("filter-content-1");
+    const filterOutcome = document.getElementById("filter-content-2");
+    const filterButton = document.getElementById("filter-button");
+    const filterSection = document.getElementById("filter-section")
+    filterButton.addEventListener("click" ,(e) => {
+        e.preventDefault();
+        // if (processFilterIncome === false && processFilterOutcome === false) {
+        //     wrapperRenderTransaction.innerHTML = "";
+        // }
+        filterSection.classList.remove("invisible");
+    })
+    filterIncome.addEventListener("click",(e) => {
+        e.preventDefault();
+        wrapperRenderTransaction.innerHTML = "";
+        if (filteringIncome.length === 0) {
+            const warningMessage = document.createElement("p");
+            warningMessage.textContent = "Tidak ada data pemasukan";
+            processFilterIncome = false;
+            wrapperRenderTransaction.appendChild(warningMessage);
+        }
+        for (let i = 0; i < filteringIncome.length; i++ ) {
+            const idResult = filteringIncome[i].id;
+            const nameResult = filteringIncome[i].transactionName;
+            const typeResult = filteringIncome[i].type;
+            const categoryResult = filteringIncome[i].category;
+            const nominalResult = Number(filteringIncome[i].nominal);
+            const nominalDisplay = nominalResult.toLocaleString(`id-ID`);
+            const dateResult = filteringIncome[i].date;
+            const dateParse = new Date(dateResult);
+            const dateDisplay = dateParse.toLocaleDateString(`id-ID`,options);
+
+            const createResultSection = document.createElement("section");
+            createResultSection.className = "data-trans rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
+            wrapperRenderTransaction.appendChild(createResultSection);
+            const createRenderSection = document.createElement("section");
+            createRenderSection.className = "p-6";
+            createRenderSection.id = `transaction-${idResult}`
+            createResultSection.appendChild(createRenderSection);
+            const getResultSection = document.getElementById(`transaction-${idResult}`);
+
+            const idRenderSection = document.createElement("p");
+            idRenderSection.textContent = `ID : ${idResult}`;
+            const nameSection = document.createElement("p");
+            nameSection.textContent = `Transcations Name : ${nameResult}`;
+            const typeSection = document.createElement("p");
+            typeSection.textContent = `Type : ${typeResult}`;
+            const categorySection = document.createElement("p");
+            categorySection.textContent = `Category : ${categoryResult}`;
+            const nominalSection = document.createElement("p");
+            nominalSection.textContent = `Nominal : ${nominalDisplay}`;
+            const dateSection = document.createElement("p");
+            dateSection.textContent = `Date : ${dateDisplay}`;
+            getResultSection.appendChild(idRenderSection);
+            getResultSection.appendChild(nameSection);
+            getResultSection.appendChild(typeSection);
+            getResultSection.appendChild(categorySection);
+            getResultSection.appendChild(nominalSection);
+            getResultSection.appendChild(dateSection);
+        }
+    })
+    filterOutcome.addEventListener("click",(e) => {
+        e.preventDefault();
+        wrapperRenderTransaction.innerHTML = "";
+        if (filteringOutcome.length === 0) {
+            const warningMessage = document.createElement("p");
+            warningMessage.textContent = "Tidak ada data pengeluaran";
+            wrapperRenderTransaction.appendChild(warningMessage);
+        }
+        for (let i = 0; i < filteringOutcome.length; i++ ) {
+            const idResult = filteringOutcome[i].id;
+            const nameResult = filteringOutcome[i].transactionName;
+            const typeResult = filteringOutcome[i].type;
+            const categoryResult = filteringOutcome[i].category;
+            const nominalResult = Number(filteringOutcome[i].nominal);
+            const nominalDisplay = nominalResult.toLocaleString(`id-ID`);
+            const dateResult = filteringOutcome[i].date;
+            const dateParse = new Date(dateResult);
+            const dateDisplay = dateParse.toLocaleDateString(`id-ID`,options);
+
+            const createResultSection = document.createElement("section");
+            createResultSection.className = "data-trans rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
+            wrapperRenderTransaction.appendChild(createResultSection);
+            const createRenderSection = document.createElement("section");
+            createRenderSection.className = "p-6";
+            createRenderSection.id = `transaction-${idResult}`
+            createResultSection.appendChild(createRenderSection);
+            const getResultSection = document.getElementById(`transaction-${idResult}`);
+
+            const idRenderSection = document.createElement("p");
+            idRenderSection.textContent = `ID : ${idResult}`;
+            const nameSection = document.createElement("p");
+            nameSection.textContent = `Transcations Name : ${nameResult}`;
+            const typeSection = document.createElement("p");
+            typeSection.textContent = `Type : ${typeResult}`;
+            const categorySection = document.createElement("p");
+            categorySection.textContent = `Category : ${categoryResult}`;
+            const nominalSection = document.createElement("p");
+            nominalSection.textContent = `Nominal : ${nominalDisplay}`;
+            const dateSection = document.createElement("p");
+            dateSection.textContent = `Date : ${dateDisplay}`;
+            getResultSection.appendChild(idRenderSection);
+            getResultSection.appendChild(nameSection);
+            getResultSection.appendChild(typeSection);
+            getResultSection.appendChild(categorySection);
+            getResultSection.appendChild(nominalSection);
+            getResultSection.appendChild(dateSection);
+        }
+        
+    })
+}
+
+filterOperation();
+filterOutput();
+
 addRenderResult();
 
 function deleteEditConfiguration() {
@@ -218,10 +353,11 @@ function deleteEditConfiguration() {
     })
 }
 
+console.log(dataTransactions);
 deleteEditConfiguration();
 
-let summarizeElement = [];
 function autoSummarizeOperation() {
+    let summarizeElement = [];
     for (const transactions of dataTransactions) {
         summarizeElement.push({
             id:transactions.ID,
@@ -236,13 +372,19 @@ function autoSummarizeOperation() {
 }
 
 const summaryWrapper = document.getElementById("summary-wrapper");
-function summaryOutput() {
+const toSummarize = document.getElementById("to-summarize");
+function summaryOutput(e) {
+    e.preventDefault();
+    summaryWrapper.innerHTML = "";
     const output = autoSummarizeOperation();
     const summaryContent = document.createElement("section");
+    if (document.getElementById("summary-content")) {
+        return;
+    }
     summaryContent.id = "summary-content";
     summaryWrapper.appendChild(summaryContent);
     const getSummaryContent = document.getElementById("summary-content");
-    getSummaryContent.className = "rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
+    getSummaryContent.className = "rounded-2xl w-sm max-w-lg p-4 shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
     let total = 0;
     for (let i = 0; i < output.length; i++) {
         const id = output[i].id;
@@ -255,9 +397,7 @@ function summaryOutput() {
 
         const nameValue = document.createElement("p");
         nameValue.id = "name-value";
-        // fix kenapa undefined
-        // besok lanjut auto summary, dan coba buat fitur filter type income or outcome
-        nameValue.textContent = `Transaksi ${output.id} : ${nameContent}`;
+        nameValue.textContent = `Transaksi ${id} : ${nameContent}`;
         const typeValue = document.createElement("p");
         typeValue.id = "type-value";
         typeValue.textContent = `Type : ${typeContent}`;
@@ -275,7 +415,6 @@ function summaryOutput() {
         getSummaryContent.appendChild(categoryValue);
         getSummaryContent.appendChild(dateValue);
         getSummaryContent.appendChild(nominal);
-        
     }
     const totalNominal = document.createElement("p");
     totalNominal.id = "total-value";
@@ -283,8 +422,22 @@ function summaryOutput() {
     const totalTranscation = document.createElement("p");
     totalTranscation.id = "total-trans-value";
     totalTranscation.textContent = `Total transaksi : ${output.length}`;
+    const closeSummary = document.createElement("button");
+    closeSummary.type = "button";
+    closeSummary.className = "p-4 bg-amber-400 rounded-2xl"
+    closeSummary.textContent = "Close";
+    closeSummary.addEventListener("click",(e) => {
+        e.preventDefault();
+        summaryContent.remove(); 
+    })
     getSummaryContent.appendChild(totalNominal);
     getSummaryContent.appendChild(totalTranscation);
+    getSummaryContent.appendChild(closeSummary);
 }
 
-summaryOutput();
+toSummarize.addEventListener("click",(e) => {
+    summaryOutput(e);
+});
+
+// summaryOutput();
+// console.log(dataTransactions);
