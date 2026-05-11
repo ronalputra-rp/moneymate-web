@@ -59,7 +59,7 @@ The project follows a modular architecture approach to separate:
 ### Dashboard UI
 
 ![Balance Page](assets/Balance.png)
-![Summary Page](assets/summary.png)
+![Summary Page](assets/Summary.png)
 ![Transactions Page](assets/Transaction.png)
 UI previews below represent the current mobile-first version of the application.
 
