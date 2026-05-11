@@ -1,6 +1,6 @@
 export let dataTransactions = [];
 let id = 1;
-let balance = 0;
+export let balance = 0;
 
 export function addBalance (nominal) {
     balance = nominal;
