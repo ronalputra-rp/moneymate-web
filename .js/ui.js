@@ -1,14 +1,27 @@
-import {addController, editController, deleteController, addBalanceController, loadBalanceController, editBalanceController, deleteBalanceController } from "./main.mjs";
+import {
+    addController,
+    editController,
+    deleteController,
+    addBalanceController,
+    loadBalanceController,
+    editBalanceController,
+    deleteBalanceController,
+} from "./main.mjs";
 import { loadBalance, loadTransactions, saveBalance } from "./storage.mjs";
-import { dataTransactions } from "./data.mjs";
+import { balance, dataTransactions, editBalance } from "./data.mjs";
 
+const stateData = dataTransactions;
+const balanceState = loadBalanceController();
 const transactionsData = loadTransactions();
+const finalData = stateData.sort((a, b) => {
+    return a.id - b.id;
+});
 
 const balanceWrapper = document.getElementById("balance-wrapper");
 const balanceInputSection = document.getElementById("balance-section");
 const balanceInput = document.getElementById("balance-input");
 const balanceButton = document.getElementById("balance-button");
-const toBalance = document.getElementById("to-balance")
+const toBalance = document.getElementById("to-balance");
 const idInput = document.getElementById("id-input");
 const transactionInput = document.getElementById("trans-input");
 const typeInput = document.getElementById("type-input");
@@ -19,21 +32,24 @@ const saveButton = document.getElementById("save-button");
 const wrapperRenderTransaction = document.getElementById("list-data-wrapper");
 const inputSection = document.getElementById("input-data");
 const inputForm = document.getElementById("input-form");
+const closeForm = document.getElementById("close-form");
 const listDataButton = document.getElementById("to-list");
-const addButton = document.getElementById("to-add");
+const addButton = document.getElementById("add-button");
 const balanceDataThumb = document.getElementById("balance-data-thumb");
 let editingId = null;
 
-listDataButton.addEventListener("click",(e) => {
-    e.preventDefault();
-    wrapperRenderTransaction.classList.remove("hidden");
-})
+// listDataButton.addEventListener("click",(e) => {
+// e.preventDefault();
+// wrapperRenderTransaction.classList.remove("hidden");
+// })
 
 let currentBalance = null;
+
 function newBalanceHandle(e) {
     e.preventDefault();
     const balanceValue = balanceInput.value.trim();
     addBalanceController(balanceValue);
+
     currentBalance = balanceValue;
     balanceInputSection.classList.add("invisible");
     balanceButton.classList.add("invisible");
@@ -45,10 +61,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let getBalance = loadBalanceController();
     if (getBalance) {
         currentBalance = getBalance;
-        balanceDataThumb.remove();
+        // balanceDataThumb.remove();
         renderBalance();
     }
-})
+});
 
 function renderBalance() {
     balanceWrapper.innerHTML = "";
@@ -56,29 +72,80 @@ function renderBalance() {
         return;
     }
     const balanceOutputWrap = document.createElement("section");
-    balanceOutputWrap.className = "balance-out rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
+    balanceOutputWrap.className =
+        "balance-out relative rounded-2xl px-4 sm:max-w-sm lg:max-w-lg hover:bg-emerald-600 hover:text-white";
     balanceOutputWrap.id = "balance-out-section";
     balanceWrapper.appendChild(balanceOutputWrap);
     const balanceOutputData = document.createElement("p");
-    balanceOutputData.className = "p-6";
+    balanceOutputData.className = "pl-2 mt-6 text-sm text-white font-semibold font-1";
     balanceOutputData.id = "balance-out-data";
-    balanceOutputData.textContent = `Your Balance : ${currentBalance.toLocaleString(`id-ID`)}`;
+    balanceOutputData.textContent = `Wallet Balance`;
     balanceOutputWrap.appendChild(balanceOutputData);
+    let hideButton = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+    </svg>
+    `;
+    const balanceOutputNominal = document.createElement("p");
+    balanceOutputNominal.className = "pl-2 text-4xl mt-1 mb-4 font-3";
+    balanceOutputNominal.id = "balance-out-nominal";
+    balanceOutputNominal.textContent = `Rp. ${currentBalance.toLocaleString(`id-ID`)}`;
+    balanceOutputWrap.appendChild(balanceOutputNominal);
+    const hideNominal = document.createElement("button");
+    hideNominal.id = "hide-nominal";
+    hideNominal.type = "button";
+    hideNominal.className = "ml-2 absolute top-8 -translate-y-0.5 right-1/4 md:right-1/2 lg:right-1/2 translate-x-2";
+    hideNominal.innerHTML = `${hideButton}`;
+    balanceOutputWrap.appendChild(hideNominal);
+    let isToggle = false;
+    hideNominal.addEventListener("click", (e) => {
+        isToggle = !isToggle;
+        e.preventDefault();
+        const nominalOutput = document.getElementById("balance-out-nominal");
+        if (isToggle) {
+            nominalOutput.textContent = "Rp. -------";
+            hideButton = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+            </svg>
+            `;
+            hideNominal.innerHTML = `${hideButton}`;
+        } else {
+            nominalOutput.textContent = `Rp. ${currentBalance.toLocaleString(`id-ID`)}`;
+            hideButton = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>`;
+            hideNominal.innerHTML = `${hideButton}`;
+        }
+    });
+    const buttonSection = document.createElement("section");
+    buttonSection.className = "flex ml-1";
+    balanceOutputWrap.appendChild(buttonSection);
+    const editIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+    </svg>
+    `;
     const editBalanceButton = document.createElement("button");
     editBalanceButton.type = "button";
     editBalanceButton.id = "edit-balance";
-    editBalanceButton.className = "pl-6 hover:bg-emerald-400";
-    editBalanceButton.textContent = "Edit balance";
+    editBalanceButton.className =
+        "p-3 gap-2 flex items-center bg-green-600 rounded-2xl text-slate-100 text-sm font-3 font-medium uppercase cursor-pointer ring-1 ring-white";
+    editBalanceButton.innerHTML = `${editIcon} Edit`;
+    const deleteIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+    </svg>
+    `;
     const deleteBalanceButton = document.createElement("button");
     deleteBalanceButton.type = "button";
     deleteBalanceButton.id = "delete-balance";
-    deleteBalanceButton.className = "delete-balance pl-6 hover:bg-emerald-400";
-    deleteBalanceButton.textContent = "Delete balance";
-    balanceOutputWrap.appendChild(editBalanceButton);
-    balanceOutputWrap.appendChild(deleteBalanceButton);
+    deleteBalanceButton.className =
+        "delete-balance p-3 gap-2 flex items-center ml-4 bg-red-500 font-3 font-medium text-sm uppercase rounded-2xl cursor-pointer ring-1 ring-white";
+    deleteBalanceButton.innerHTML = `${deleteIcon} Delete`;
+    buttonSection.appendChild(editBalanceButton);
+    buttonSection.appendChild(deleteBalanceButton);
     const balanceEdit = document.getElementById("edit-balance");
     const balanceDelete = document.getElementById("delete-balance");
-    balanceEdit.addEventListener("click",(e) => {
+    balanceEdit.addEventListener("click", (e) => {
         e.preventDefault();
         balanceOutputWrap.classList.add("invisible");
         balanceInputSection.classList.remove("hidden");
@@ -86,121 +153,266 @@ function renderBalance() {
         balanceButton.textContent = "Update";
         // fix bug edit button ketika di klik 2 kali form nya hilang
     });
-    balanceDelete.addEventListener("click",(e) => {
+    balanceDelete.addEventListener("click", (e) => {
         balanceOutputWrap.remove();
         deleteBalanceController();
-    })
-} 
+    });
+}
 
-balanceButton.addEventListener("click",(e) => {
+balanceButton.addEventListener("click", (e) => {
     newBalanceHandle(e);
-})
+});
 
-toBalance.addEventListener("click",(e) => {
-    e.preventDefault();
-    balanceInputSection.classList.remove("hidden");
-})
+// toBalance.addEventListener("click",(e) => {
+// e.preventDefault();
+// balanceInputSection.classList.remove("hidden");
+// })
+
+// function nominalViewer() {
+//     const hide = document.getElementById("hide-nominal");
+//     console.log(hide)
+//     hide.addEventListener("click",(e) => {
+//         e.preventDefault();
+//         e.stopPropagation();
+//         const hideAttributes = `---------`
+//         const nominalOutput = document.getElementById("balance-out-nominal");
+//         nominalOutput.textContent = `Rp. ${hideAttributes}`;
+//     })
+// }
+// nominalViewer();
+// const hide = document.getElementById("hide-nominal");
+// console.log(hide);
+
+function categoryConfiguration() {
+    const categoryButton = document.getElementById("category");
+    let arrowIcons = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+    `;
+    categoryButton.innerHTML = `${arrowIcons}`;
+    const selectCategory = document.getElementById("select-category");
+    const closeWrapper = document.getElementById("close-wrapper");
+    categoryButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        selectCategory.classList.remove("hidden");
+        selectCategory.classList.add("flex");
+        closeWrapper.classList.remove("invisible");
+    });
+    let categoryContent = [
+        "Food & Beverage",
+        "Housing & Rent",
+        "Bills & Utilites",
+        "Transportation",
+        "Shopping",
+        "Healthcare",
+        "Entertainment",
+        "Personal Care",
+        "Education",
+        "Gifts & Donation",
+        "Others",
+    ];
+    for (let i = 0; i < categoryContent.length; i++) {
+        const option = document.createElement("section");
+        option.className = "category-option p-2 hover:bg-emerald-600 cursor-pointer";
+        selectCategory.appendChild(option);
+    }
+    const categoryOption = document.getElementsByClassName("category-option");
+    const closeOption = document.getElementById("close-option");
+    const closeLogo = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" w-5 h-5 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+</svg>
+`
+    closeOption.innerHTML = `${closeLogo}`;
+    closeOption.addEventListener("click",(e) => {
+        e.preventDefault();
+        selectCategory.classList.add("hidden");
+        selectCategory.classList.remove("flex");
+    })
+    for (let i = 0; i < categoryOption.length; i++) {
+        categoryOption[i].textContent = categoryContent[i];
+    }
+    // const categorySection = document.getElementById("category-section");
+    let editOptionLogo = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" class="w-5 h-5" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+</svg>
+`;
+    const outputSection = document.getElementById("output-section");
+    const outputOption = document.getElementById("output-option");
+    const editOption = document.getElementById("edit-option");
+    for (let i = 0; i < categoryOption.length; i++) {
+        categoryOption[i].addEventListener("click", (e) => {
+            const target = e.target.textContent.trim();
+            // const outputSection = document.createElement("section");
+            // outputSection.id = "output-section";
+            // outputSection.className = "flex items-center gap-2 border p-2 border-emerald-300 rounded-xl"
+            // categorySection.appendChild(outputSection);
+            // const outputElement = document.createElement("p");
+            // outputElement.id = "output-option";
+            // outputElement.textContent = `${target}`;
+            // outputSection.appendChild(outputElement);
+            // const editOption = document.createElement("button");
+            // editOption.type = "button";
+            // editOption.id = "edit-option";
+            // editOption.innerHTML = `${editOptionLogo}`;
+            // outputSection.appendChild(editOption);
+            outputOption.textContent = `${target}`;
+            editOption.innerHTML = `${editOptionLogo}`;
+            selectCategory.classList.remove("flex")
+            selectCategory.classList.add("hidden");
+            categoryButton.classList.add("hidden");
+            outputSection.classList.remove("hidden");
+            outputSection.classList.add("flex");
+            editOption.addEventListener("click",(e) => {
+                e.preventDefault();
+                outputSection.classList.add("hidden");
+                outputSection.classList.remove("flex")
+                selectCategory.classList.remove("hidden");
+                selectCategory.classList.add("flex");
+            })
+        });
+    }
+}
+
+categoryConfiguration();
 
 function handleSave(e) {
     e.preventDefault();
+    const outputOption = document.getElementById("output-option");
+    console.log(outputOption);
     const id = idInput.value.trim();
     const transactionName = transactionInput.value.trim();
     const typeTransactions = typeInput.value.trim();
-    const category = categoryInput.value.trim();
+    const category = outputOption.textContent.trim();
     const nominal = nominalInput.value.trim();
     const date = dateInput.value.trim();
     const data = {
-        id:id,
-        transactionName:transactionName,
-        type:typeTransactions,
-        category:category,
-        nominal:Number(nominal),
-        date:date
-    }
+        id: id,
+        transactionName: transactionName,
+        type: typeTransactions,
+        category: category,
+        nominal: Number(nominal),
+        date: date,
+    };
     if (editingId === null) {
         addController(data);
-    }
-    else {
-        editController(editingId,data);
+    } else {
+        editController(editingId, data);
     }
     window.location.reload();
 }
 
-saveButton.addEventListener("click",handleSave);
+saveButton.addEventListener("click", handleSave);
 
-addButton.addEventListener("click",(e) => {
+addButton.addEventListener("click", (e) => {
     e.preventDefault();
-    inputSection.classList.remove("hidden");
+    // wrapperRenderTransaction.innerHTML = "";
+    inputSection.classList.toggle("invisible");
     inputForm.classList.remove("hidden");
-})
+    document.body.classList.add("overflow-y-hidden");
+});
+
+closeForm.addEventListener("click", (e) => {
+    e.preventDefault();
+    inputSection.classList.toggle("invisible");
+    document.body.classList.remove("overflow-y-hidden");
+});
+
+const selectCategory = document.getElementById("select-category");
+const outputSection = document.getElementById("output-section");
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        // inputSection.classList.add("invisible");
+        searchWrapper.classList.add("invisible");
+        document.body.classList.remove("overflow-y-hidden");
+        selectCategory.classList.remove("flex");
+        selectCategory.classList.add("hidden");
+    }
+});
 
 function addRenderResult() {
     let options = {
-        weekday:'long',
-        year:'numeric',
-        month:'long',
-        day:'numeric'
-    }
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    };
 
-    for (let i = 0; i < transactionsData.length; i++ ) {
-        const idResult = transactionsData[i].id;
-        const nameResult = transactionsData[i].transactionName;
-        const typeResult = transactionsData[i].type;
-        const categoryResult = transactionsData[i].category;
-        const nominalResult = Number(transactionsData[i].nominal);
+    for (let i = 0; i < finalData.length; i++) {
+        const idResult = finalData[i].id;
+        const nameResult = finalData[i].transactionName;
+        const typeResult = finalData[i].type;
+        const categoryResult = finalData[i].category;
+        const nominalResult = Number(finalData[i].nominal);
         const nominalDisplay = nominalResult.toLocaleString(`id-ID`);
-        const dateResult = transactionsData[i].date;
+        const dateResult = finalData[i].date;
         const dateParse = new Date(dateResult);
-        const dateDisplay = dateParse.toLocaleDateString(`id-ID`,options);
+        const dateDisplay = dateParse.toLocaleDateString(`id-ID`, options);
 
         const createResultSection = document.createElement("section");
-        createResultSection.className = "data-trans rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
+        createResultSection.className =
+            "data-trans bg-linear-to-bl my-2 from-green-600 to-neutral-900 shadow-sm inset-shadow-sm inset-shadow-lime-500 shadow-emerald-500/100 rounded-2xl sm:max-w-sm lg:max-w-xl hover:bg-emerald-600 hover:text-white";
         wrapperRenderTransaction.appendChild(createResultSection);
         const createRenderSection = document.createElement("section");
-        createRenderSection.id = `transaction-${idResult}`
+        createRenderSection.id = `transaction-${idResult}`;
         createRenderSection.className = "p-6";
         createResultSection.appendChild(createRenderSection);
         const getResultSection = document.getElementById(`transaction-${idResult}`);
         const idRenderSection = document.createElement("p");
-        idRenderSection.id = "id-result"
-        idRenderSection.textContent = `ID : ${idResult}`;
-        const nameSection = document.createElement("p");
-        nameSection.id = "name-result"
-        nameSection.textContent = `Transcations Name : ${nameResult}`;
-        const typeSection = document.createElement("p");
-        typeSection.className = "type-result";
-        typeSection.textContent = `Type : ${typeResult}`;
-        const categorySection = document.createElement("p");
-        categorySection.id = "category-result";
-        categorySection.textContent = `Category : ${categoryResult}`;
+        idRenderSection.id = "id-result";
+        idRenderSection.className = "font-1 text-xl";
+        idRenderSection.textContent = `${idResult}. ${nameResult}`;
+        // const nameSection = document.createElement("p");
+        // nameSection.id = "name-result"
+        // nameSection.className = ""
+        // nameSection.textContent = `${nameResult}`;
+        // const typeSection = document.createElement("p");
+        // typeSection.className = "type-result";
+        // typeSection.textContent = `Type : ${typeResult}`;
+        // const categorySection = document.createElement("p");
+        // categorySection.id = "category-result";
+        // categorySection.textContent = `Category : ${categoryResult}`;
         const nominalSection = document.createElement("p");
+        nominalSection.className = "px-4 py-1 mt-2 font-2 text-xl font-bold";
         nominalSection.id = "nominal-result";
-        nominalSection.textContent = `Nominal : ${nominalDisplay}`;
+        nominalSection.textContent = `Rp. ${nominalDisplay}`;
         const dateSection = document.createElement("p");
+        dateSection.className = "px-4 pt-1 mt-2 font-3 font-light text-sm text-white italic";
         dateSection.id = "date-result";
-        dateSection.textContent = `Date : ${dateDisplay}`;
+        dateSection.textContent = `${dateDisplay} `;
+
+        const editIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+        </svg>
+        `;
+        const deleteIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+        </svg>
+        `;
+        const transButtonSection = document.createElement("section");
+        transButtonSection.className = "flex justify-center gap-4";
         const addEditButton = document.createElement("button");
         addEditButton.dataset.id = `${idResult}`;
         addEditButton.type = "button";
-        addEditButton.className = "edit-button hover:bg-emerald-400";
-        addEditButton.textContent = "Edit data";
+        addEditButton.className =
+            "edit-button p-3 mt-4 flex items-center gap-2 bg-green-600 lg:hover:bg-emerald-400 font-3 font-medium uppercase text-sm rounded-2xl ring-1 ring-white";
+        addEditButton.innerHTML = `${editIcon} Edit`;
         const addDeleteButton = document.createElement("button");
         addDeleteButton.dataset.id = `${idResult}`;
         addDeleteButton.type = "button";
-        addDeleteButton.className = `delete-button hover:bg-emerald-400`;
-        addDeleteButton.textContent = "Delete Data";
+        addDeleteButton.className = `delete-button p-3 mt-4 flex items-center gap-2 bg-red-500 hover:bg-emerald-400 font-3 font-medium uppercase text-sm rounded-2xl ring-1 ring-white`;
+        addDeleteButton.innerHTML = `${deleteIcon} Delete`;
 
         getResultSection.appendChild(idRenderSection);
-        getResultSection.appendChild(nameSection);
-        getResultSection.appendChild(typeSection);
-        getResultSection.appendChild(categorySection);
-        getResultSection.appendChild(nominalSection);
+        // getResultSection.appendChild(nameSection);
+        // getResultSection.appendChild(typeSection);
+        // getResultSection.appendChild(categorySection);
         getResultSection.appendChild(dateSection);
-        getResultSection.appendChild(addEditButton);
-        getResultSection.appendChild(addDeleteButton);
+        getResultSection.appendChild(nominalSection);
+        getResultSection.appendChild(transButtonSection);
+        transButtonSection.appendChild(addEditButton);
+        transButtonSection.appendChild(addDeleteButton);
     }
 }
-
 
 function filterOutput() {
     console.log(transactionsData);
@@ -211,25 +423,25 @@ function filterOutput() {
 
 function filterOperation() {
     let options = {
-        weekday:'long',
-        year:'numeric',
-        month:'long',
-        day:'numeric'
-    }
-    const filteringIncome = transactionsData.filter(x => x.type === "Income");
-    const filteringOutcome = transactionsData.filter(x => x.type === "Outcome");
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    };
+    const filteringIncome = finalData.filter((x) => x.type === "Income");
+    const filteringOutcome = finalData.filter((x) => x.type === "Outcome");
     const filterIncome = document.getElementById("filter-content-1");
     const filterOutcome = document.getElementById("filter-content-2");
     const filterButton = document.getElementById("filter-button");
-    const filterSection = document.getElementById("filter-section")
-    filterButton.addEventListener("click" ,(e) => {
+    const filterSection = document.getElementById("filter-section");
+    filterButton.addEventListener("click", (e) => {
         e.preventDefault();
         // if (processFilterIncome === false && processFilterOutcome === false) {
         //     wrapperRenderTransaction.innerHTML = "";
         // }
-        filterSection.classList.remove("invisible");
-    })
-    filterIncome.addEventListener("click",(e) => {
+        filterSection.classList.toggle("invisible");
+    });
+    filterIncome.addEventListener("click", (e) => {
         e.preventDefault();
         wrapperRenderTransaction.innerHTML = "";
         if (filteringIncome.length === 0) {
@@ -238,7 +450,7 @@ function filterOperation() {
             processFilterIncome = false;
             wrapperRenderTransaction.appendChild(warningMessage);
         }
-        for (let i = 0; i < filteringIncome.length; i++ ) {
+        for (let i = 0; i < filteringIncome.length; i++) {
             const idResult = filteringIncome[i].id;
             const nameResult = filteringIncome[i].transactionName;
             const typeResult = filteringIncome[i].type;
@@ -247,21 +459,22 @@ function filterOperation() {
             const nominalDisplay = nominalResult.toLocaleString(`id-ID`);
             const dateResult = filteringIncome[i].date;
             const dateParse = new Date(dateResult);
-            const dateDisplay = dateParse.toLocaleDateString(`id-ID`,options);
+            const dateDisplay = dateParse.toLocaleDateString(`id-ID`, options);
 
             const createResultSection = document.createElement("section");
-            createResultSection.className = "data-trans rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
+            createResultSection.className =
+                "data-trans rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
             wrapperRenderTransaction.appendChild(createResultSection);
             const createRenderSection = document.createElement("section");
             createRenderSection.className = "p-6";
-            createRenderSection.id = `transaction-${idResult}`
+            createRenderSection.id = `transaction-${idResult}`;
             createResultSection.appendChild(createRenderSection);
             const getResultSection = document.getElementById(`transaction-${idResult}`);
 
             const idRenderSection = document.createElement("p");
             idRenderSection.textContent = `ID : ${idResult}`;
             const nameSection = document.createElement("p");
-            nameSection.textContent = `Transcations Name : ${nameResult}`;
+            nameSection.textContent = `Transactions Name : ${nameResult}`;
             const typeSection = document.createElement("p");
             typeSection.textContent = `Type : ${typeResult}`;
             const categorySection = document.createElement("p");
@@ -277,8 +490,8 @@ function filterOperation() {
             getResultSection.appendChild(nominalSection);
             getResultSection.appendChild(dateSection);
         }
-    })
-    filterOutcome.addEventListener("click",(e) => {
+    });
+    filterOutcome.addEventListener("click", (e) => {
         e.preventDefault();
         wrapperRenderTransaction.innerHTML = "";
         if (filteringOutcome.length === 0) {
@@ -286,7 +499,7 @@ function filterOperation() {
             warningMessage.textContent = "Tidak ada data pengeluaran";
             wrapperRenderTransaction.appendChild(warningMessage);
         }
-        for (let i = 0; i < filteringOutcome.length; i++ ) {
+        for (let i = 0; i < filteringOutcome.length; i++) {
             const idResult = filteringOutcome[i].id;
             const nameResult = filteringOutcome[i].transactionName;
             const typeResult = filteringOutcome[i].type;
@@ -295,14 +508,15 @@ function filterOperation() {
             const nominalDisplay = nominalResult.toLocaleString(`id-ID`);
             const dateResult = filteringOutcome[i].date;
             const dateParse = new Date(dateResult);
-            const dateDisplay = dateParse.toLocaleDateString(`id-ID`,options);
+            const dateDisplay = dateParse.toLocaleDateString(`id-ID`, options);
 
             const createResultSection = document.createElement("section");
-            createResultSection.className = "data-trans rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
+            createResultSection.className =
+                "data-trans rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
             wrapperRenderTransaction.appendChild(createResultSection);
             const createRenderSection = document.createElement("section");
             createRenderSection.className = "p-6";
-            createRenderSection.id = `transaction-${idResult}`
+            createRenderSection.id = `transaction-${idResult}`;
             createResultSection.appendChild(createRenderSection);
             const getResultSection = document.getElementById(`transaction-${idResult}`);
 
@@ -325,8 +539,11 @@ function filterOperation() {
             getResultSection.appendChild(nominalSection);
             getResultSection.appendChild(dateSection);
         }
-        
-    })
+    });
+    return {
+        filteringIncome: filteringIncome,
+        filteringOutcome: filteringOutcome,
+    };
 }
 
 filterOperation();
@@ -335,7 +552,7 @@ filterOutput();
 addRenderResult();
 
 function deleteEditConfiguration() {
-    wrapperRenderTransaction.addEventListener("click",(e) => {
+    wrapperRenderTransaction.addEventListener("click", (e) => {
         e.preventDefault();
         const id = e.target.dataset.id;
         if (e.target.classList.contains(`delete-button`)) {
@@ -345,99 +562,227 @@ function deleteEditConfiguration() {
         }
         if (e.target.classList.contains("edit-button")) {
             saveButton.textContent = "Edit Transactions";
-            inputSection.classList.remove("hidden");
+            inputSection.classList.toggle("invisible");
             inputForm.classList.remove("hidden");
             editingId = id;
         }
-
-    })
+    });
 }
 
 console.log(dataTransactions);
 deleteEditConfiguration();
 
 function autoSummarizeOperation() {
+    const filterData = filterOperation();
     let summarizeElement = [];
-    for (const transactions of dataTransactions) {
+    for (const transactions of filterData.filteringOutcome) {
         summarizeElement.push({
-            id:transactions.ID,
-            name:transactions.transactionName,
-            type:transactions.type,
-            category:transactions.category,
-            date:transactions.date,
-            nominal:transactions.nominal,
+            id: transactions.ID,
+            name: transactions.transactionName,
+            type: transactions.type,
+            category: transactions.category,
+            date: transactions.date,
+            nominal: transactions.nominal,
         });
     }
     return summarizeElement;
 }
 
+const summarySection = document.getElementById("summary-section");
 const summaryWrapper = document.getElementById("summary-wrapper");
+const summaryButton = document.getElementById("summary-button");
 const toSummarize = document.getElementById("to-summarize");
-function summaryOutput(e) {
+const filterButton = document.getElementById("filter-button");
+const toSpend = document.getElementById("to-spend");
+const percentage = document.getElementById("percentage");
+summaryButton.addEventListener("click", (e) => {
     e.preventDefault();
-    summaryWrapper.innerHTML = "";
-    const output = autoSummarizeOperation();
-    const summaryContent = document.createElement("section");
-    if (document.getElementById("summary-content")) {
-        return;
-    }
-    summaryContent.id = "summary-content";
-    summaryWrapper.appendChild(summaryContent);
-    const getSummaryContent = document.getElementById("summary-content");
-    getSummaryContent.className = "rounded-2xl w-sm max-w-lg p-4 shadow-2xl shadow-gray-400 hover:bg-emerald-600 hover:text-white";
-    let total = 0;
-    for (let i = 0; i < output.length; i++) {
-        const id = output[i].id;
-        const nameContent = output[i].name;
-        const typeContent = output[i].type;
-        const categoryContent = output[i].category;
-        const dateContent = output[i].date;
-        const totalNomContent = Number(output[i].nominal);
-        total += totalNomContent;
+    wrapperRenderTransaction.innerHTML = "";
+    summarySection.classList.remove("hidden");
+    filterButton.classList.add("hidden");
+});
 
-        const nameValue = document.createElement("p");
-        nameValue.id = "name-value";
-        nameValue.textContent = `Transaksi ${id} : ${nameContent}`;
-        const typeValue = document.createElement("p");
-        typeValue.id = "type-value";
-        typeValue.textContent = `Type : ${typeContent}`;
-        const categoryValue = document.createElement("p");
-        categoryValue.id = "category-value";
-        categoryValue.textContent = `Kategori : ${categoryContent}`;
-        const dateValue = document.createElement("p");
-        dateValue.id = "date-value";
-        dateValue.textContent = `Tanggal : ${dateContent}`;
-        const nominal = document.createElement("p");
-        nominal.id = "nominal-value";
-        nominal.textContent = `Uang yang diterima/dibayar : ${totalNomContent}`;
-        getSummaryContent.appendChild(nameValue);
-        getSummaryContent.appendChild(typeValue);
-        getSummaryContent.appendChild(categoryValue);
-        getSummaryContent.appendChild(dateValue);
-        getSummaryContent.appendChild(nominal);
+function summaryCalculation() {
+    let total = 0;
+    let summaryData = autoSummarizeOperation();
+    for (let i = 0; i < summaryData.length; i++) {
+        const totalNomContent = Number(summaryData[i].nominal);
+        total += totalNomContent;
     }
-    const totalNominal = document.createElement("p");
-    totalNominal.id = "total-value";
-    totalNominal.textContent = `Total pengeluaran : ${total}`;
-    const totalTranscation = document.createElement("p");
-    totalTranscation.id = "total-trans-value";
-    totalTranscation.textContent = `Total transaksi : ${output.length}`;
-    const closeSummary = document.createElement("button");
-    closeSummary.type = "button";
-    closeSummary.className = "p-4 bg-amber-400 rounded-2xl"
-    closeSummary.textContent = "Close";
-    closeSummary.addEventListener("click",(e) => {
-        e.preventDefault();
-        summaryContent.remove(); 
-    })
-    getSummaryContent.appendChild(totalNominal);
-    getSummaryContent.appendChild(totalTranscation);
-    getSummaryContent.appendChild(closeSummary);
+    return total;
 }
 
-toSummarize.addEventListener("click",(e) => {
-    summaryOutput(e);
+function graphSolution() {
+    let available = 0;
+    const balanceValue = balanceState;
+    const total = summaryCalculation();
+    const getCanvas = document.getElementById("graph-canvas");
+    const ctx = getCanvas.getContext("2d");
+    const ratio = total / balanceValue;
+    const percent = Math.round(ratio * 100);
+    const percentDisplay = percent.toLocaleString("id-ID", { style: "decimal" });
+    available = balanceValue - total;
+    const availableDisplay = available.toLocaleString("id-ID");
+    console.log(`Balance nya : ${balanceValue}`);
+    console.log(`Total nya : ${total}`);
+    console.log(`Persenan nya : ${percent}`);
+    const angle = ratio * 2 * Math.PI;
+    const centerX = 110,
+        centerY = 110,
+        radius = 85;
+    // ctx.clearRect(0,0,200,200);
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    ctx.strokeStyle = "pink";
+
+    ctx.lineWidth = 35;
+    ctx.lineCap = "round";
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, -0.5 * Math.PI, angle - 0.5 * Math.PI);
+    ctx.strokeStyle = "red";
+    // ctx.lineCap = "round";
+    ctx.stroke();
+
+    percentage.textContent = `${percentDisplay} % used`;
+    toSpend.textContent = `Rp. ${availableDisplay}`;
+}
+
+graphSolution();
+
+const totalExpenses = document.getElementById("total-expenses");
+const spendDetails = document.getElementById("details");
+function summaryDetails() {
+    const total = summaryCalculation();
+    const format = total.toLocaleString("id-ID");
+    totalExpenses.textContent = `Rp. ${format}`;
+}
+
+const filteringOutcome = finalData.filter((x) => x.type === "Outcome");
+const categoryGrouping = filteringOutcome.map((x) => {return {
+    category:x.category,
+    nominal:x.nominal
+}});
+function spendingField() {
+    for (let i = 0; i < categoryGrouping.length; i++) {
+        const spendingCategory = document.createElement("section");
+        spendingCategory.className = "flex justify-between";
+        spendingCategory.id = `category-${i + 1}`;
+        spendDetails.appendChild(spendingCategory);
+        const spendingName = document.createElement("p");
+        spendingName.id = `name-${i + 1}`;
+        spendingCategory.appendChild(spendingName);
+        spendingName.className = "px-4 py-2";
+        spendingName.textContent = categoryGrouping[i].category;
+        const spendingValue = document.createElement("p");
+        spendingValue.id = `value-${i}`;
+        spendingValue.textContent = `Rp. ${categoryGrouping[i].nominal.toLocaleString(`id-ID`)}`;
+        spendingValue.className = "px-4 py-2";
+        spendingCategory.appendChild(spendingValue);
+    }
+}
+
+summaryDetails();
+spendingField();
+
+const totalIncome = document.getElementById("total-income");
+// sampai sini
+
+const searchButton = document.getElementById("search");
+const searchWrapper = document.getElementById("search-wrapper");
+const searchForm = document.getElementById("search-form");
+const searchInput = document.getElementById("search-input");
+searchButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    const inputData = searchInput.value.trim();
+    searchWrapper.classList.toggle("invisible");
+    document.body.classList.add("overflow-y-hidden");
 });
+
+searchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+});
+
+document.addEventListener("keydown", (e) => {
+    let options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    };
+    if (e.key === "Enter") {
+        document.body.classList.remove("overflow-y-hidden");
+        wrapperRenderTransaction.innerHTML = "";
+        const inputData = searchInput.value.trim();
+        const searchData = finalData.find((x) => x.transactionName === inputData);
+        searchWrapper.classList.add("invisible");
+
+        const idSearch = searchData.id;
+        const nameSearch = searchData.transactionName;
+        const nominalSearch = Number(searchData.nominal);
+        const dateSearch = searchData.date;
+        const dateParse = new Date(dateSearch);
+        const dateDisplay = dateParse.toLocaleDateString(`id-ID`, options);
+        const nominalDisplay = nominalSearch.toLocaleString(`id-ID`);
+
+        const searchResultSection = document.createElement("section");
+        searchResultSection.className =
+            "data-trans bg-linear-to-bl my-2 from-green-600 to-neutral-900 shadow-sm inset-shadow-sm inset-shadow-lime-500 shadow-emerald-500/100 rounded-2xl sm:max-w-sm lg:max-w-xl hover:bg-emerald-600 hover:text-white";
+        wrapperRenderTransaction.appendChild(searchResultSection);
+        const resultSection = document.createElement("section");
+        resultSection.id = `transaction-${idSearch}`;
+        resultSection.className = "p-6";
+        searchResultSection.appendChild(resultSection);
+        const getResultSection = document.getElementById(`transaction-${idSearch}`);
+        const idRenderSection = document.createElement("p");
+        idRenderSection.id = "id-result";
+        idRenderSection.className = "font-1 text-xl";
+        idRenderSection.textContent = `${idSearch}. ${nameSearch}`;
+        const nominalSection = document.createElement("p");
+        nominalSection.className = "px-4 py-1 mt-2 font-2 text-xl font-bold";
+        nominalSection.id = "nominal-result";
+        nominalSection.textContent = `Rp. ${nominalDisplay}`;
+        const dateSection = document.createElement("p");
+        dateSection.className = "px-4 pt-1 mt-2 font-3 font-light text-sm text-white italic";
+        dateSection.id = "date-result";
+        dateSection.textContent = `${dateDisplay} `;
+
+        const editIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+        </svg>
+        `;
+        const deleteIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+        </svg>
+        `;
+        const transButtonSection = document.createElement("section");
+        transButtonSection.className = "flex justify-center gap-4";
+        const addEditButton = document.createElement("button");
+        addEditButton.dataset.id = `${idSearch}`;
+        addEditButton.type = "button";
+        addEditButton.className =
+            "edit-button p-3 mt-4 flex items-center gap-2 bg-green-600 lg:hover:bg-emerald-400 font-3 font-medium uppercase text-sm rounded-2xl ring-1 ring-white";
+        addEditButton.innerHTML = `${editIcon} Edit`;
+        const addDeleteButton = document.createElement("button");
+        addDeleteButton.dataset.id = `${idSearch}`;
+        addDeleteButton.type = "button";
+        addDeleteButton.className = `delete-button p-3 mt-4 flex items-center gap-2 bg-red-500 hover:bg-emerald-400 font-3 font-medium uppercase text-sm rounded-2xl ring-1 ring-white`;
+        addDeleteButton.innerHTML = `${deleteIcon} Delete`;
+
+        getResultSection.appendChild(idRenderSection);
+        getResultSection.appendChild(dateSection);
+        getResultSection.appendChild(nominalSection);
+        getResultSection.appendChild(transButtonSection);
+        transButtonSection.appendChild(addEditButton);
+        transButtonSection.appendChild(addDeleteButton);
+    }
+});
+
+// toSummarize.addEventListener("click",(e) => {
+// summaryOutput(e);
+// });
 
 // summaryOutput();
 // console.log(dataTransactions);
