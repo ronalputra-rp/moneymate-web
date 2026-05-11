@@ -1,105 +1,343 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="output.css">
-</head>
-<body class="bg-black text-white">
-    <section id="container">
-        <section id="wrapper">
-            <header>
-                <h1 id="title-page" class="text-2xl p-6 text-center">Welcome back Ronal</h1>
-            </header>
-            <section id="balance-section" class="hidden">
-                <label for="balance" id="balance-label">Balance : </label>
-                <input type="number" id="balance-input" placeholder="Input your balance first" required minlength="500" maxlength="1000000000000" class="border border-green-400">
-                <button type="button" class="bg-emerald-500" id="balance-button">Save data</button>
-            </section>
-            <section id="balance-wrapper" class="">
-            </section>
-            <section id="input-data" class="hidden">
-                <form id="input-form" class="hidden" action="" autocomplete="off">
-                    <section id="id-section">
-                        <label for="id" id="id-label">ID : </label>
-                        <input type="number" id="id-input" required minlength="1" maxlength="1000" class="border border-green-400">
-                    </section>
-                    <section id="trans-section">
-                        <label for="transaction-name" id="name-label">Transaction Name : </label>
-                        <input type="text" id="trans-input" required class="border border-green-400">
-                    </section>
-                    <section id="type-section">
-                        <label for="type" id="type-label">Type : </label>
-                        <input type="text" id="type-input" placeholder="Income or Outcome" required class="border border-green-400">
-                    </section>
-                    <section id="category-section">
-                        <label for="category" id="category-label">Category : </label>
-                        <input type="text" id="category-input" required class="border border-green-400">
-                    </section>
-                    <section id="nominal-section">
-                        <label for="nominal" id="nominal-label">Nominal : </label>
-                        <input type="number" inputmode="numeric" id="nominal-input" required class="border border-green-400">
-                    </section>
-                    <section id="date-section">
-                        <label for="date" id="date-label">Date : </label>
-                        <input type="date" id="date-input" required class="border border-green-400">
-                    </section>
-                </form> 
-                <!-- <section id="save-section"> -->
-                    <button type="button" class="bg-emerald-500" id="save-button">Save Transactions</button>
-                <!-- </section> -->
-            </section>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard</title>
+        <link rel="stylesheet" href="output.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet"
+        />
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+            rel="stylesheet"
+        />
+    </head>
 
-            <section id="dashboard-section" class="h-96 flex items-center justify-center gap-5">
-                <section id="dashboard-wrapper" class="flex justify-center"></section>
-                    <section id="balance-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
-                        <section id="balance-thumb-content" class="p-6">
-                            <p id="title-balance">Add your balance first</p>
-                            <a id="to-balance" href="#balance-wrapper" class="hover:bg-emerald-600 hover:text-white">Add</a>
-                        </section>
-                    </section>
-                    <section id="list-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
-                        <section id="list-thumb-content" class="p-6">
-                            <p id="title-list">List of data</p>
-                            <a id="to-list" href="#" class="hover:bg-emerald-600 hover:text-white">More</a>
-                        </section>
-                    </section>
-                    <section id="add-data-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
-                        <section id="add-thumb-content" class="p-6">
-                            <p id="title-add">Add income and outcome transaction</p>
-                            <a id="to-add" href="#input-form" class="hover:bg-emerald-600 hover:text-white">Add</a>
-                        </section>
-                    </section>
-                    <section id="auto-summarize-thumb" class="rounded-2xl w-sm max-w-lg shadow-2xl shadow-gray-400">
-                        <section id="summarize-thumb-content" class="p-6">
-                            <p id="title-summarize">Auto Summarize</p>
-                            <a id="to-summarize" href="#" class="hover:bg-emerald-600 hover:text-white">Summarize all your transaction into the report</a>
-                        </section>
-                    </section>
+    <body class="bg-zinc-900 text-white">
+        <section id="container">
+            <section id="wrapper">
+                <header class="flex justify-between">
+                    <h1 id="title-name" class="text-2xl pl-6 mt-4 font-medium font-1">
+                        Hi Ronal
+                        <p id="title-greet" class="text-sm mt-2 font-2">Welcome Back!</p>
+                    </h1>
+                </header>
+                <section id="balance-section" class="hidden">
+                    <label for="balance" id="balance-label">Balance : </label>
+                    <input
+                        type="number"
+                        id="balance-input"
+                        placeholder="Input your balance first"
+                        required
+                        minlength="500"
+                        maxlength="1000000000000"
+                        class="border border-green-400"
+                    />
+                    <button type="button" class="bg-emerald-500" id="balance-button">Save data</button>
                 </section>
-            </section>
+                <section id="balance-wrapper" class="mt-12 mb-10"></section>
 
-            <!-- Prototype Data Section -->
-             <!-- Flow nya logically mengikuti jumlah data yang ada -->
-            <section id="list-data-section" class="">
-                <button type="button" id="filter-button" class="bg-emerald-600 text-white p-4 rounded-xl hover:cursor-pointer">filter</button>
-                    <section id="filter-section" class="invisible">
-                        <button type="button" id="filter-content-1" class="hover:bg-emerald-600">Income</button>
-                        <button type="button" id="filter-content-2" class="hover:bg-emerald-600">Outcome</button>
-                        <button type="button" id="filter-content-3" class="hover:bg-emerald-600">Category</button>
+                <!-- Prototype Data Section -->
+                <!-- Flow nya logically mengikuti jumlah data yang ada -->
+                <section id="list-data-section" class="">
+                    <section id="feature-wrapper" class="flex justify-center mb-8">
+                        <section id="add-transaction-button" class="flex">
+                            <a
+                                label="add-transaction"
+                                href="#input-form"
+                                id="add-button"
+                                class="bg-green-800 p-4 mt-10 rounded-2xl cursor-pointer ring-1 ring-white"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    class="w-6 h-6 mx-1"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="size-6"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                    />
+                                </svg>
+                            </a>
+                        </section>
+                        <section id="auto-summary-button">
+                            <button
+                                type="button"
+                                id="summary-button"
+                                class="flex bg-green-800 p-4 mt-10 ml-2 rounded-2xl cursor-pointer ring-1 ring-white"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    class="w-6 h-6 mx-1"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="size-6"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                                    />
+                                </svg>
+                            </button>
+                        </section>
+                        <section id="search=button">
+                            <button
+                                type="button"
+                                id="search"
+                                class="bg-green-800 p-4 mt-10 ml-2 rounded-2xl cursor-pointer ring-1 ring-white"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    class="w-6 h-6 mx-1"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="size-6"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                                    />
+                                </svg>
+                            </button>
+                        </section>
                     </section>
-                <section id="list-data-wrapper" class="mb-20 p-6">
-                </section>
-            </section>
 
-            <section id="summary-section" class="">
-                <section id="summary-wrapper" class="mb-20 p-6">
-                    
+                    <section id="input-data" class="invisible">
+                        <section
+                            class="fixed inset-0 flex flex-col gap-2 justify-center items-center z-40 bg-black/50 backdrop-blur-xs"
+                        >
+                            <section id="title-form" class="bg-zinc-800 flex justify-between rounded-2xl mb-1 lg:mb-6">
+                                <h2 class="p-4 font-1 text-lg md:text-2xl">ADD TRANSACTIONS</h2>
+                                <button type="button" id="close-form" class="p-4">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        class="w-8 h-8"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="size-6"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                    </svg>
+                                </button>
+                            </section>
+                            <form
+                                id="input-form"
+                                class="bg-zinc-800 w-2xs max-h-[60vh] lg:max-h-none overflow-y-auto lg:overflow-y-visible flex flex-col gap-4 lg:w-lg lg:grid lg:grid-cols-2 lg:gap-2 lg:items-center lg:content-center rounded-2xl p-4 lg:max-w-2xl z-50"
+                                action=""
+                                autocomplete="off"
+                            >
+                                <section id="id-section">
+                                    <label for="id" id="id-label" class="font-3">ID TRANSACTION : </label>
+                                    <input
+                                        type="number"
+                                        id="id-input"
+                                        placeholder="1"
+                                        required
+                                        minlength="1"
+                                        maxlength="1000"
+                                        class="border mt-2 w-full border-emerald-300 p-2 rounded-xl"
+                                    />
+                                </section>
+                                <section id="trans-section">
+                                    <label for="transaction-name" id="name-label">TRANSACTION NAME : </label>
+                                    <input
+                                        type="text"
+                                        id="trans-input"
+                                        placeholder="Beli makanan"
+                                        required
+                                        class="border mt-2 p-2 w-full border-emerald-300 rounded-xl"
+                                    />
+                                </section>
+                                <section id="type-section">
+                                    <label for="type" id="type-label">TYPE : </label>
+                                    <input
+                                        type="text"
+                                        id="type-input"
+                                        placeholder="Income or Outcome"
+                                        required
+                                        class="border mt-2 p-2 w-full border-emerald-300 rounded-xl"
+                                    />
+                                </section>
+                                <section id="category-wrapper">
+                                    <section id="category-section" class="flex items-center gap-2">
+                                        <section id="category-title" class="flex items-center gap-2">
+                                            <p class="">CATEGORY :</p>
+                                            <button id="category" type="button" class=""></button>
+                                        </section>
+                                        <!-- <input type="text" id="category-input" placeholder="Foods" required class="border mt-2 p-2 w-full border-emerald-300 rounded-xl"> -->
+                                        <section
+                                            id="output-section"
+                                            class="hidden items-center gap-2 border p-2 border-emerald-300 rounded-xl"
+                                        >
+                                            <p id="output-option"></p>
+                                            <button type="button" id="edit-option"></button>
+                                        </section>
+                                        <section
+                                            id="select-category"
+                                            class="hidden justify-center flex-col z-40 fixed inset-5 rounded-xl overflow-y-auto backdrop-blur-sm bg-black/35"
+                                        >
+                                            <section
+                                                id="close-wrapper"
+                                                class="bg-zinc-800 sticky top-0 p-4 flex justify-between mt-12 invisible rounded-xl"
+                                            >
+                                                <h2>SELECT CATEGORY</h2>
+                                                <button type="button" id="close-option" class=""></button>
+                                            </section>
+                                        </section>
+                                    </section>
+                                </section>
+                                <section id="nominal-section">
+                                    <label for="nominal" id="nominal-label">NOMINAL : </label>
+                                    <input
+                                        type="number"
+                                        inputmode="numeric"
+                                        id="nominal-input"
+                                        required
+                                        class="border mt-2 p-2 w-full border-emerald-300 rounded-xl"
+                                    />
+                                </section>
+                                <section id="date-section" class="lg:col-span-1">
+                                    <label for="date" id="date-label">DATE : </label>
+                                    <br />
+                                    <input
+                                        type="date"
+                                        id="date-input"
+                                        required
+                                        class="border mt-2 p-2 w-full border-emerald-300 rounded-xl"
+                                    />
+                                </section>
+                                <button
+                                    type="button"
+                                    class="lg:col-span-2 bg-green-800 p-4 rounded-2xl cursor-pointer ring-1 ring-white mt-4"
+                                    id="save-button"
+                                >
+                                    Save Transactions
+                                </button>
+                            </form>
+                            <!-- <section id="save-section"> -->
+                            <!-- </section> -->
+                        </section>
+                    </section>
+
+                    <section id="search-wrapper" class="invisible">
+                        <section
+                            id="search-container"
+                            class="inset-0 z-40 fixed flex justify-center bg-black/50 backdrop-blur-xs"
+                        >
+                            <form id="search-form" class="mt-4">
+                                <input
+                                    type="text"
+                                    placeholder="Search your transaction here"
+                                    id="search-input"
+                                    class="p-2 font-2 text-white border border-emerald-300 rounded-2xl"
+                                />
+                            </form>
+                        </section>
+                    </section>
+
+                    <section id="summary-section" class="hidden">
+                        <section id="summary-wrapper" class="p-6 flex justify-center items-center">
+                            <section id="finance-summary-circle" class="relative bg-emerald-700 p-4 rounded-2xl">
+                                <canvas id="graph-canvas" width="220" height="220"></canvas>
+                                <section
+                                    id="data-graph"
+                                    class="absolute mt-4 top-2/6 right-1/3 translate-x-1.5 translate-y-1"
+                                >
+                                    <p id="to-spend" class="text-center text-lg font-bold"></p>
+                                    <p class="text-center" class="text-sm">Left to spend</p>
+                                </section>
+                                <p id="percentage" class="text-center text-lg font-semibold">0%</p>
+                            </section>
+                        </section>
+                        <section id="spending-wrapper" class="mt-6 p-4">
+                            <section id="spending-content" class="bg-emerald-700 rounded-2xl">
+                                <section id="title-wrapper" class="p-4 flex justify-between">
+                                    <header id="title-spend" class="text-lg font-bold">Spending</header>
+                                    <h2 id="total-expenses" class="text-lg font-bold"></h2>
+                                </section>
+                                <section id="details">
+                                </section>
+                            </section>
+                        </section>
+                        <section id="income-wrapper" class="mt-6 p-4">
+                            <section id="income-content" class="bg-emerald-700 rounded-2xl">
+                                <section id="title-income-wrapper" class="p-4 flex justify-between">
+                                    <header id="title-income" class="text-lg font-bold">Income</header>
+                                    <h2 id="total-income" class="text-lg font-bold"></h2>
+                                </section>
+                                <section id="details-income">
+                                </section>
+                            </section>
+                        </section>
+                    </section>
+
+                    <section id="list-data-wrapper" class="mt-4 p-6 flex gap-6 flex-col"></section>
+                    <section id="button-wrapper" class="relative">
+                        <button
+                            type="button"
+                            id="filter-button"
+                            class="bg-green-800 text-white flex items-center px-2 py-4 ml-6 uppercase font-3 font-medium text-sm rounded-xl hover:cursor-pointer ring-1 ring-white"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                class="w-5 h-5 mx-1"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="size-6"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z"
+                                />
+                            </svg>
+                            Filter by
+                        </button>
+                        <section id="filter-section" class="px-6 flex gap-2 invisible">
+                            <button
+                                type="button"
+                                id="filter-content-1"
+                                class="hover:bg-emerald-600 absolute top-1.5 translate-y-2 left-2/5 translate-x-2"
+                            >
+                                Income
+                            </button>
+                            <button
+                                type="button"
+                                id="filter-content-2"
+                                class="hover:bg-emerald-600 absolute top-1.5 translate-y-2 right-1/5"
+                            >
+                                Outcome
+                            </button>
+                            <!-- <button type="button" id="filter-content-3" class="hover:bg-emerald-600 absolute">Category</button> -->
+                        </section>
+                    </section>
                 </section>
             </section>
         </section>
-    </section>
-    <script type="module" src=".js/ui.js"></script>
-</body>
+        <script type="module" src=".js/ui.js"></script>
+    </body>
 </html>
