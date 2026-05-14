@@ -48,11 +48,13 @@ let currentBalance = null;
 function newBalanceHandle(e) {
     e.preventDefault();
     const balanceValue = balanceInput.value.trim();
+    const beforeFormat = Number(balanceValue);
+    const formatBalance = beforeFormat.toLocaleString("id-ID");
     addBalanceController(balanceValue);
 
-    currentBalance = balanceValue;
-    balanceInputSection.classList.add("invisible");
-    balanceButton.classList.add("invisible");
+    currentBalance = formatBalance;
+    balanceInputSection.classList.add("hidden");
+    balanceButton.classList.add("hidden");
     // balanceWrapper.classList.remove("hidden");
     renderBalance();
 }
@@ -60,9 +62,14 @@ function newBalanceHandle(e) {
 document.addEventListener("DOMContentLoaded", () => {
     let getBalance = loadBalanceController();
     if (getBalance) {
-        currentBalance = getBalance;
+        const formatGet = getBalance.toLocaleString('id-ID');
+        console.log(formatGet);
+        currentBalance = formatGet;
         // balanceDataThumb.remove();
         renderBalance();
+    }
+    if (!document.getElementById("balance-out-section")) {
+        balanceInputSection.classList.remove("hidden");
     }
 });
 
@@ -156,6 +163,8 @@ function renderBalance() {
     balanceDelete.addEventListener("click", (e) => {
         balanceOutputWrap.remove();
         deleteBalanceController();
+        balanceInputSection.classList.remove("hidden");
+        balanceButton.classList.remove("hidden");
     });
 }
 
@@ -575,16 +584,16 @@ deleteEditConfiguration();
 function autoSummarizeOperation() {
     const filterData = filterOperation();
     let summarizeElement = [];
-    for (const transactions of filterData.filteringOutcome) {
-        summarizeElement.push({
-            id: transactions.ID,
-            name: transactions.transactionName,
-            type: transactions.type,
-            category: transactions.category,
-            date: transactions.date,
-            nominal: transactions.nominal,
-        });
-    }
+        for (const transactions of filterData.filteringOutcome) {
+            summarizeElement.push({
+                id: transactions.ID,
+                name: transactions.transactionName,
+                type: transactions.type,
+                category: transactions.category,
+                date: transactions.date,
+                nominal: transactions.nominal,
+            });
+        }
     return summarizeElement;
 }
 
@@ -605,9 +614,14 @@ summaryButton.addEventListener("click", (e) => {
 function summaryCalculation() {
     let total = 0;
     let summaryData = autoSummarizeOperation();
-    for (let i = 0; i < summaryData.length; i++) {
-        const totalNomContent = Number(summaryData[i].nominal);
-        total += totalNomContent;
+    if (summaryData.length < 0) {
+        total = 0
+    }
+    else {
+        for (let i = 0; i < summaryData.length; i++) {
+            const totalNomContent = Number(summaryData[i].nominal);
+            total += totalNomContent;
+        }
     }
     return total;
 }
@@ -621,7 +635,12 @@ function graphSolution() {
     const ratio = total / balanceValue;
     const percent = Math.round(ratio * 100);
     const percentDisplay = percent.toLocaleString("id-ID", { style: "decimal" });
-    available = balanceValue - total;
+    if (total === 0) {
+        available = 0
+    }
+    else {
+        available = balanceValue - total;
+    }
     const availableDisplay = available.toLocaleString("id-ID");
     console.log(`Balance nya : ${balanceValue}`);
     console.log(`Total nya : ${total}`);
@@ -654,10 +673,23 @@ graphSolution();
 
 const totalExpenses = document.getElementById("total-expenses");
 const spendDetails = document.getElementById("details");
+const totalIncome = document.getElementById("total-income");
 function summaryDetails() {
+    let income = 0;
     const total = summaryCalculation();
-    const format = total.toLocaleString("id-ID");
-    totalExpenses.textContent = `Rp. ${format}`;
+    const filterData = filterOperation();
+    const formatOutcome = total.toLocaleString("id-ID");
+    totalExpenses.textContent = `Rp. ${formatOutcome}`;
+    if (filterData.filteringIncome.length > 0) {
+        for (const data of filterData.filteringIncome) {
+            income += data.nominal;
+        }
+        const formatIncome = income.toLocaleString("id-ID");
+        totalIncome.textContent = `Rp. ${formatIncome}`;
+    }
+    else {
+        totalIncome.textContent = `Rp. 0`;
+    }
 }
 
 const filteringOutcome = finalData.filter((x) => x.type === "Outcome");
@@ -684,11 +716,36 @@ function spendingField() {
     }
 }
 
+const filteringIncome = finalData.filter((x) => x.type === "Income");
+const incomeGrouping = filteringIncome.map((x) => {
+    return {
+        category:x.category,
+        nominal:x.nominal
+    }
+})
+const incomeDetails = document.getElementById("details-income");
+function incomeField() {
+    for (let i = 0; i < incomeGrouping.length; i++) {
+        const incomeCategory = document.createElement("section");
+        incomeCategory.className = "flex justify-between";
+        incomeCategory.id = `income-${i + 1}`;
+        incomeDetails.appendChild(incomeCategory);
+        const incomeName = document.createElement("p");
+        incomeName.id = `income-name-${i + 1}`;
+        incomeCategory.appendChild(incomeName);
+        incomeName.className = "px-4 py-2";
+        incomeName.textContent = incomeGrouping[i].category;
+        const incomeValue = document.createElement("p");
+        incomeValue.id = `income-value-${i}`;
+        incomeValue.textContent = `Rp. ${incomeGrouping[i].nominal.toLocaleString(`id-ID`)}`;
+        incomeValue.className = "px-4 py-2";
+        incomeCategory.appendChild(incomeValue);
+    }
+}
+
 summaryDetails();
 spendingField();
-
-const totalIncome = document.getElementById("total-income");
-// sampai sini
+incomeField();
 
 const searchButton = document.getElementById("search");
 const searchWrapper = document.getElementById("search-wrapper");
