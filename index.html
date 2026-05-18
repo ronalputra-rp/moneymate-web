@@ -29,19 +29,26 @@
                 </header>
                 <section id="balance-section" class="relative hidden mt-10 w-80 px-4">
                     <section class="flex border-2 border-emerald-500 rounded-2xl px-4 py-3">
-                         <input
+                        <input
                             type="number"
                             id="balance-input"
                             placeholder="Input your balance first"
                             required
-                        minlength="500"
+                            minlength="500"
                             maxlength="1000000000000"
                             class="w-full focus:outline-none font-semibold text-white placeholder-transparent peer"
                         />
-                        <label for="balance" id="balance-label" class="absolute left-6 -top-3 px-2 bg-zinc-900 text-sm font-medium">Balance : </label>
+                        <label
+                            for="balance"
+                            id="balance-label"
+                            class="absolute left-6 -top-3 px-2 bg-zinc-900 text-sm font-medium"
+                            >Balance :
+                        </label>
                     </section>
                     <section id="save-balance-section" class="flex justify-center items-center">
-                        <button type="button" class="bg-emerald-600 mt-4 p-2 rounded-xl" id="balance-button">Save data</button>
+                        <button type="button" class="bg-emerald-600 mt-4 p-2 rounded-xl" id="balance-button">
+                            Save data
+                        </button>
                     </section>
                 </section>
                 <section id="balance-wrapper" class="mt-12 mb-10"></section>
@@ -49,78 +56,9 @@
                 <!-- Prototype Data Section -->
                 <!-- Flow nya logically mengikuti jumlah data yang ada -->
                 <section id="list-data-section" class="">
-                    <section id="feature-wrapper" class="flex justify-center mb-8">
-                        <section id="add-transaction-button" class="flex">
-                            <a
-                                label="add-transaction"
-                                href="#input-form"
-                                id="add-button"
-                                class="bg-green-800 p-4 mt-10 rounded-2xl cursor-pointer ring-1 ring-white"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    class="w-6 h-6 mx-1"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="1.5"
-                                    stroke="currentColor"
-                                    class="size-6"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                    />
-                                </svg>
-                            </a>
-                        </section>
-                        <section id="auto-summary-button">
-                            <button
-                                type="button"
-                                id="summary-button"
-                                class="flex bg-green-800 p-4 mt-10 ml-2 rounded-2xl cursor-pointer ring-1 ring-white"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    class="w-6 h-6 mx-1"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="1.5"
-                                    stroke="currentColor"
-                                    class="size-6"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                                    />
-                                </svg>
-                            </button>
-                        </section>
-                        <section id="search=button">
-                            <button
-                                type="button"
-                                id="search"
-                                class="bg-green-800 p-4 mt-10 ml-2 rounded-2xl cursor-pointer ring-1 ring-white"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    class="w-6 h-6 mx-1"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="1.5"
-                                    stroke="currentColor"
-                                    class="size-6"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                                    />
-                                </svg>
-                            </button>
-                        </section>
-                    </section>
+                    <!-- <section id="feature-wrapper" class="flex justify-center mb-8">
+                        
+                    </section> -->
 
                     <section id="input-data" class="invisible">
                         <section
@@ -281,8 +219,7 @@
                                     <header id="title-spend" class="text-lg font-bold">Spending</header>
                                     <h2 id="total-expenses" class="text-lg font-bold"></h2>
                                 </section>
-                                <section id="details">
-                                </section>
+                                <section id="details"></section>
                             </section>
                         </section>
                         <section id="income-wrapper" class="mt-6 p-4">
@@ -291,8 +228,7 @@
                                     <header id="title-income" class="text-lg font-bold">Income</header>
                                     <h2 id="total-income" class="text-lg font-bold"></h2>
                                 </section>
-                                <section id="details-income">
-                                </section>
+                                <section id="details-income"></section>
                             </section>
                         </section>
                     </section>
@@ -338,6 +274,88 @@
                             </button>
                             <!-- <button type="button" id="filter-content-3" class="hover:bg-emerald-600 absolute">Category</button> -->
                         </section>
+                    </section>
+                </section>
+
+                <section id="button-field" class="">
+                    <section id="button-expanded" class="flex invisible fixed bottom-4 right-1 gap-4 justify-center items-end mb-20 flex-col-reverse">
+                        <section id="add-transaction-button" class="flex">
+                            <a
+                                label="add-transaction"
+                                href="#input-form"
+                                id="add-button"
+                                class="bg-green-800 p-4 mr-4 rounded-2xl cursor-pointer ring-1 ring-white"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    class="w-6 h-6 mx-1"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="size-6"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                    />
+                                </svg>
+                            </a>
+                        </section>
+                        <section id="auto-summary-button">
+                            <button
+                                type="button"
+                                id="summary-button"
+                                class="flex bg-green-800 p-4 mr-4 rounded-2xl cursor-pointer ring-1 ring-white"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    class="w-6 h-6 mx-1"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="size-6"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                                    />
+                                </svg>
+                            </button>
+                        </section>
+                        <section id="search=button">
+                            <button
+                                type="button"
+                                id="search"
+                                class="bg-green-800 p-4 mr-4 rounded-2xl cursor-pointer ring-1 ring-white"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    class="w-6 h-6 mx-1"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="size-6"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                                    />
+                                </svg>
+                            </button>
+                        </section>
+                    </section>
+                    <section id="fab-button" class="flex justify-end p-4">
+                        <button
+                            type="button"
+                            id="expand-button"
+                            class="bg-green-800 fixed bottom-5 right-5 p-4 mt-10 rounded-2xl cursor-pointer ring-1 ring-white"
+                        ></button>
                     </section>
                 </section>
             </section>
