@@ -29,7 +29,10 @@ export function editTransactions (id, newData) {
 }
 
 export function deleteTransactions (id) {
-    dataTransactions = dataTransactions.filter((n) => n.id !== id);
+    const index = dataTransactions.findIndex(n => String(n.id) === String(id));
+    if (index !== -1) {
+        dataTransactions.splice(index,1)
+    }
     return dataTransactions;
 }
 
