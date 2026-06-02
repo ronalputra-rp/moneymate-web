@@ -11,11 +11,14 @@ import { loadBalance, loadTransactions, saveBalance } from "./storage.mjs";
 import { balance, dataTransactions, editBalance } from "./data.mjs";
 
 const stateData = dataTransactions;
-const balanceState = loadBalanceController();
-const transactionsData = loadTransactions();
 const finalData = stateData.sort((a, b) => {
     return a.id - b.id;
 });
+const balanceState = loadBalanceController();
+const transactionsData = loadTransactions();
+console.log(transactionsData);
+
+console.log(dataTransactions);
 
 const balanceWrapper = document.getElementById("balance-wrapper");
 const balanceInputSection = document.getElementById("balance-section");
@@ -36,6 +39,7 @@ const closeForm = document.getElementById("close-form");
 const listDataButton = document.getElementById("to-list");
 const addButton = document.getElementById("add-button");
 const balanceDataThumb = document.getElementById("balance-data-thumb");
+const buttonExpanded = document.getElementById("button-expanded");
 let editingId = null;
 
 // listDataButton.addEventListener("click",(e) => {
@@ -62,7 +66,7 @@ function newBalanceHandle(e) {
 document.addEventListener("DOMContentLoaded", () => {
     let getBalance = loadBalanceController();
     if (getBalance) {
-        const formatGet = getBalance.toLocaleString('id-ID');
+        const formatGet = getBalance.toLocaleString("id-ID");
         console.log(formatGet);
         currentBalance = formatGet;
         // balanceDataThumb.remove();
@@ -172,26 +176,6 @@ balanceButton.addEventListener("click", (e) => {
     newBalanceHandle(e);
 });
 
-// toBalance.addEventListener("click",(e) => {
-// e.preventDefault();
-// balanceInputSection.classList.remove("hidden");
-// })
-
-// function nominalViewer() {
-//     const hide = document.getElementById("hide-nominal");
-//     console.log(hide)
-//     hide.addEventListener("click",(e) => {
-//         e.preventDefault();
-//         e.stopPropagation();
-//         const hideAttributes = `---------`
-//         const nominalOutput = document.getElementById("balance-out-nominal");
-//         nominalOutput.textContent = `Rp. ${hideAttributes}`;
-//     })
-// }
-// nominalViewer();
-// const hide = document.getElementById("hide-nominal");
-// console.log(hide);
-
 function categoryConfiguration() {
     const categoryButton = document.getElementById("category");
     let arrowIcons = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" class="w-6 h-6" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -230,13 +214,13 @@ function categoryConfiguration() {
     const closeLogo = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" w-5 h-5 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
 </svg>
-`
+`;
     closeOption.innerHTML = `${closeLogo}`;
-    closeOption.addEventListener("click",(e) => {
+    closeOption.addEventListener("click", (e) => {
         e.preventDefault();
         selectCategory.classList.add("hidden");
         selectCategory.classList.remove("flex");
-    })
+    });
     for (let i = 0; i < categoryOption.length; i++) {
         categoryOption[i].textContent = categoryContent[i];
     }
@@ -251,79 +235,40 @@ function categoryConfiguration() {
     for (let i = 0; i < categoryOption.length; i++) {
         categoryOption[i].addEventListener("click", (e) => {
             const target = e.target.textContent.trim();
-            // const outputSection = document.createElement("section");
-            // outputSection.id = "output-section";
-            // outputSection.className = "flex items-center gap-2 border p-2 border-emerald-300 rounded-xl"
-            // categorySection.appendChild(outputSection);
-            // const outputElement = document.createElement("p");
-            // outputElement.id = "output-option";
-            // outputElement.textContent = `${target}`;
-            // outputSection.appendChild(outputElement);
-            // const editOption = document.createElement("button");
-            // editOption.type = "button";
-            // editOption.id = "edit-option";
-            // editOption.innerHTML = `${editOptionLogo}`;
-            // outputSection.appendChild(editOption);
             outputOption.textContent = `${target}`;
             editOption.innerHTML = `${editOptionLogo}`;
-            selectCategory.classList.remove("flex")
+            selectCategory.classList.remove("flex");
             selectCategory.classList.add("hidden");
             categoryButton.classList.add("hidden");
             outputSection.classList.remove("hidden");
             outputSection.classList.add("flex");
-            editOption.addEventListener("click",(e) => {
+            editOption.addEventListener("click", (e) => {
                 e.preventDefault();
                 outputSection.classList.add("hidden");
-                outputSection.classList.remove("flex")
+                outputSection.classList.remove("flex");
                 selectCategory.classList.remove("hidden");
                 selectCategory.classList.add("flex");
-            })
+            });
         });
     }
 }
 
 categoryConfiguration();
 
-function handleSave(e) {
-    e.preventDefault();
-    const outputOption = document.getElementById("output-option");
-    console.log(outputOption);
-    const id = idInput.value.trim();
-    const transactionName = transactionInput.value.trim();
-    const typeTransactions = typeInput.value.trim();
-    const category = outputOption.textContent.trim();
-    const nominal = nominalInput.value.trim();
-    const date = dateInput.value.trim();
-    const data = {
-        id: id,
-        transactionName: transactionName,
-        type: typeTransactions,
-        category: category,
-        nominal: Number(nominal),
-        date: date,
-    };
-    if (editingId === null) {
-        addController(data);
-    } else {
-        editController(editingId, data);
-    }
-    window.location.reload();
-}
-
-saveButton.addEventListener("click", handleSave);
-
 addButton.addEventListener("click", (e) => {
     e.preventDefault();
     // wrapperRenderTransaction.innerHTML = "";
-    inputSection.classList.toggle("invisible");
+    inputSection.classList.toggle("hidden");
     inputForm.classList.remove("hidden");
+    buttonExpanded.classList.add("invisible");
     document.body.classList.add("overflow-y-hidden");
 });
 
 closeForm.addEventListener("click", (e) => {
     e.preventDefault();
-    inputSection.classList.toggle("invisible");
+    inputSection.classList.toggle("hidden");
     document.body.classList.remove("overflow-y-hidden");
+    buttonExpanded.classList.add("invisible");
 });
 
 const selectCategory = document.getElementById("select-category");
@@ -339,6 +284,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 function addRenderResult() {
+    wrapperRenderTransaction.innerHTML = "";
     let options = {
         weekday: "long",
         year: "numeric",
@@ -370,16 +316,6 @@ function addRenderResult() {
         idRenderSection.id = "id-result";
         idRenderSection.className = "font-1 text-xl";
         idRenderSection.textContent = `${idResult}. ${nameResult}`;
-        // const nameSection = document.createElement("p");
-        // nameSection.id = "name-result"
-        // nameSection.className = ""
-        // nameSection.textContent = `${nameResult}`;
-        // const typeSection = document.createElement("p");
-        // typeSection.className = "type-result";
-        // typeSection.textContent = `Type : ${typeResult}`;
-        // const categorySection = document.createElement("p");
-        // categorySection.id = "category-result";
-        // categorySection.textContent = `Category : ${categoryResult}`;
         const nominalSection = document.createElement("p");
         nominalSection.className = "px-4 py-1 mt-2 font-2 text-xl font-bold";
         nominalSection.id = "nominal-result";
@@ -412,9 +348,6 @@ function addRenderResult() {
         addDeleteButton.innerHTML = `${deleteIcon} Delete`;
 
         getResultSection.appendChild(idRenderSection);
-        // getResultSection.appendChild(nameSection);
-        // getResultSection.appendChild(typeSection);
-        // getResultSection.appendChild(categorySection);
         getResultSection.appendChild(dateSection);
         getResultSection.appendChild(nominalSection);
         getResultSection.appendChild(transButtonSection);
@@ -422,6 +355,63 @@ function addRenderResult() {
         transButtonSection.appendChild(addDeleteButton);
     }
 }
+
+function handleSave(e) {
+    e.preventDefault();
+    const outputOption = document.getElementById("output-option");
+    const id = idInput.value.trim();
+    const transactionName = transactionInput.value.trim();
+    const typeTransactions = typeInput.value.trim();
+    const category = outputOption.textContent.trim();
+    const nominal = nominalInput.value.trim();
+    const date = dateInput.value.trim();
+    const data = {
+        id: id,
+        transactionName: transactionName,
+        type: typeTransactions,
+        category: category,
+        nominal: Number(nominal),
+        date: date,
+    };
+    if (editingId === null) {
+        addController(data);
+    } else {
+        editController(editingId, data);
+    }
+    // wrapperRenderTransaction.innerHTML = "";
+    addRenderResult();
+    inputSection.classList.add("hidden");
+    inputForm.classList.add("hidden");
+    buttonExpanded.classList.add("invisible");
+    document.body.classList.remove("overflow-y-hidden");
+}
+
+function deleteEditConfiguration() {
+    wrapperRenderTransaction.addEventListener("click", (e) => {
+        e.preventDefault();
+        const deleteBtn = e.target.closest(".delete-button");
+        if (deleteBtn) {
+            const id = e.target.dataset.id;
+            deleteController(id);
+            alert("Transaksi berhasil dihapus");
+            addRenderResult();
+            console.log("After delete the data will be : ", stateData);
+        }
+        if (e.target.classList.contains("edit-button")) {
+            saveButton.textContent = "Edit Transactions";
+            inputSection.classList.toggle("hidden");
+            inputForm.classList.remove("hidden");
+            buttonExpanded.classList.add("invisible");
+            editingId = id;
+        }
+    });
+}
+
+deleteEditConfiguration();
+
+addRenderResult();
+
+saveButton.addEventListener("click", handleSave);
 
 function filterOutput() {
     console.log(transactionsData);
@@ -558,42 +548,19 @@ function filterOperation() {
 filterOperation();
 filterOutput();
 
-addRenderResult();
-
-function deleteEditConfiguration() {
-    wrapperRenderTransaction.addEventListener("click", (e) => {
-        e.preventDefault();
-        const id = e.target.dataset.id;
-        if (e.target.classList.contains(`delete-button`)) {
-            deleteController(id);
-            alert("Transaksi berhasil dihapus");
-            window.location.reload();
-        }
-        if (e.target.classList.contains("edit-button")) {
-            saveButton.textContent = "Edit Transactions";
-            inputSection.classList.toggle("invisible");
-            inputForm.classList.remove("hidden");
-            editingId = id;
-        }
-    });
-}
-
-console.log(dataTransactions);
-deleteEditConfiguration();
-
 function autoSummarizeOperation() {
     const filterData = filterOperation();
     let summarizeElement = [];
-        for (const transactions of filterData.filteringOutcome) {
-            summarizeElement.push({
-                id: transactions.ID,
-                name: transactions.transactionName,
-                type: transactions.type,
-                category: transactions.category,
-                date: transactions.date,
-                nominal: transactions.nominal,
-            });
-        }
+    for (const transactions of filterData.filteringOutcome) {
+        summarizeElement.push({
+            id: transactions.ID,
+            name: transactions.transactionName,
+            type: transactions.type,
+            category: transactions.category,
+            date: transactions.date,
+            nominal: transactions.nominal,
+        });
+    }
     return summarizeElement;
 }
 
@@ -615,9 +582,8 @@ function summaryCalculation() {
     let total = 0;
     let summaryData = autoSummarizeOperation();
     if (summaryData.length < 0) {
-        total = 0
-    }
-    else {
+        total = 0;
+    } else {
         for (let i = 0; i < summaryData.length; i++) {
             const totalNomContent = Number(summaryData[i].nominal);
             total += totalNomContent;
@@ -636,9 +602,8 @@ function graphSolution() {
     const percent = Math.round(ratio * 100);
     const percentDisplay = percent.toLocaleString("id-ID", { style: "decimal" });
     if (total === 0) {
-        available = 0
-    }
-    else {
+        available = 0;
+    } else {
         available = balanceValue - total;
     }
     const availableDisplay = available.toLocaleString("id-ID");
@@ -686,17 +651,18 @@ function summaryDetails() {
         }
         const formatIncome = income.toLocaleString("id-ID");
         totalIncome.textContent = `Rp. ${formatIncome}`;
-    }
-    else {
+    } else {
         totalIncome.textContent = `Rp. 0`;
     }
 }
 
 const filteringOutcome = finalData.filter((x) => x.type === "Outcome");
-const categoryGrouping = filteringOutcome.map((x) => {return {
-    category:x.category,
-    nominal:x.nominal
-}});
+const categoryGrouping = filteringOutcome.map((x) => {
+    return {
+        category: x.category,
+        nominal: x.nominal,
+    };
+});
 function spendingField() {
     for (let i = 0; i < categoryGrouping.length; i++) {
         const spendingCategory = document.createElement("section");
@@ -719,10 +685,10 @@ function spendingField() {
 const filteringIncome = finalData.filter((x) => x.type === "Income");
 const incomeGrouping = filteringIncome.map((x) => {
     return {
-        category:x.category,
-        nominal:x.nominal
-    }
-})
+        category: x.category,
+        nominal: x.nominal,
+    };
+});
 const incomeDetails = document.getElementById("details-income");
 function incomeField() {
     for (let i = 0; i < incomeGrouping.length; i++) {
@@ -770,7 +736,7 @@ document.addEventListener("keydown", (e) => {
         day: "numeric",
     };
     if (e.key === "Enter") {
-        document.body.classList.remove("overflow-y-hidden");
+        // document.body.classList.remove("overflow-y-hidden");
         wrapperRenderTransaction.innerHTML = "";
         const inputData = searchInput.value.trim();
         const searchData = finalData.find((x) => x.transactionName === inputData);
@@ -838,16 +804,15 @@ document.addEventListener("keydown", (e) => {
 });
 
 const expandButton = document.getElementById("expand-button");
-const buttonExpanded = document.getElementById("button-expanded");
 const expandIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mx-1" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z" />
 </svg>
-`
-expandButton.innerHTML = `${expandIcon}`; 
-expandButton.addEventListener("click",(e) => {
+`;
+expandButton.innerHTML = `${expandIcon}`;
+expandButton.addEventListener("click", (e) => {
     e.preventDefault();
     buttonExpanded.classList.toggle("invisible");
-})
+});
 
 // toSummarize.addEventListener("click",(e) => {
 // summaryOutput(e);
