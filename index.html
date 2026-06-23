@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Dashboard</title>
-        <link rel="stylesheet" href="output.css" />
+        <link rel="stylesheet" href="./output.css" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -53,8 +53,9 @@
                 </section>
                 <section id="balance-wrapper" class="mt-12 mb-10"></section>
 
-                <!-- Prototype Data Section -->
-                <!-- Flow nya logically mengikuti jumlah data yang ada -->
+                <section id="view-all-wrapper" class="flex justify-end">
+                    <button id="view-all-button" type="button" class="p-1 text-sm font-3 mr-5 text-gray-300 rounded-xl flex items-center"></button>
+                </section>
                 <section id="list-data-section" class="">
                     <!-- <section id="feature-wrapper" class="flex justify-center mb-8">
                         
@@ -90,7 +91,7 @@
                                 action=""
                                 autocomplete="off"
                             >
-                                <section id="id-section">
+                                <!-- <section id="id-section">
                                     <label for="id" id="id-label" class="font-3">ID TRANSACTION : </label>
                                     <input
                                         type="number"
@@ -101,7 +102,7 @@
                                         maxlength="1000"
                                         class="border mt-2 w-full border-emerald-300 p-2 rounded-xl"
                                     />
-                                </section>
+                                </section> -->
                                 <section id="trans-section">
                                     <label for="transaction-name" id="name-label">TRANSACTION NAME : </label>
                                     <input
@@ -172,7 +173,7 @@
                                 </section>
                                 <button
                                     type="button"
-                                    class="lg:col-span-2 bg-green-800 p-4 rounded-2xl cursor-pointer ring-1 ring-white mt-4"
+                                    class="flex items-center gap-2 justify-center lg:col-span-2 bg-green-800 p-4 rounded-2xl cursor-pointer ring-1 ring-white mt-4"
                                     id="save-button"
                                 >
                                     Save Transactions
