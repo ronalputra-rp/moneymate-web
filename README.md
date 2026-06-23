@@ -4,6 +4,9 @@ MoneyMate is a personal finance tracker web app built with Vanilla JavaScript an
 
 This project is currently under active development and will continue to evolve with new features, UI improvements, and better state management approaches over time.
 
+## 🌐 Live Demo
+Check out the live website: https://moneymate-tracker.netlify.app/
+
 ## 🚧 Project Status
 
 > Work in Progress (WIP)
