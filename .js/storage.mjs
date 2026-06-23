@@ -25,9 +25,6 @@ export function saveBalance (nominal) {
 
 export function loadBalance () {
     const data = localStorage.getItem(STORAGE_BALANCE);
-    // if (!data) {
-    //     return "Belum ada data yang dimasukkan";
-    // }
     return JSON.parse(data);
 }
 
