@@ -1,7 +1,21 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
+@layer base {
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    @apply appearance-none m-0;
+  }
+
+  input[type='number'] {
+    @apply [appearance:textfield];
+  }
+}
+
+@theme {
+    --font-1: "Raleway", sans-serif;
+    --font-2: "Quicksand", sans-serif;
+    --font-3: "Inter", sans-serif;
+}
 @layer base {
   input[type='number']::-webkit-outer-spin-button,
   input[type='number']::-webkit-inner-spin-button {
