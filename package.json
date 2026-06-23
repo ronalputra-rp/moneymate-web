@@ -1,16 +1,19 @@
 {
   "name": "moneymate-project",
   "version": "1.0.0",
-  "description": "",
-  "main": ".js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tailwindcss -i ./input.css -o ./output.css --minify"
+    "build:css": "tailwindcss -i ./input.css -o ./output.css",
+    "build": "npm run build:css"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "tailwindcss": "^4.1.18"
+  },
   "devDependencies": {
-    "tailwindcss": "^4.0.0-alpha"
-  }
+    "@tailwindcss/cli": "^4.1.18"
+  },
+  "description": ""
 }
