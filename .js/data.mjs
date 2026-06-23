@@ -17,15 +17,10 @@ export function addTransactions (transactions) {
 }
 
 export function editTransactions (id, newData) {
-    dataTransactions = dataTransactions.map((n) => {
-        if (n.id === id) {
-            return {
-                ...n,
-                ...newData
-            }
-        }
-        return n
-    });
+    const index = dataTransactions.findIndex(n => String(n.id) === String(id));
+     if (index !== -1) {
+        dataTransactions[index] = {...dataTransactions[index],...newData};
+    }
 }
 
 export function deleteTransactions (id) {
