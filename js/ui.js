@@ -14,7 +14,7 @@ let stateData = dataTransactions;
 let finalData = stateData.sort((a, b) => {
     return a.id - b.id;
 });
-console.log(finalData);
+console.log(stateData);
 const balanceState = loadBalanceController();
 const transactionsData = loadTransactions();
 
@@ -24,7 +24,7 @@ const balanceInputSection = document.getElementById("balance-section");
 const balanceInput = document.getElementById("balance-input");
 const balanceButton = document.getElementById("balance-button");
 const toBalance = document.getElementById("to-balance");
-// const idInput = document.getElementById("id-input");
+const idInput = document.getElementById("id-input");
 const transactionInput = document.getElementById("trans-input");
 const typeInput = document.getElementById("type-input");
 const categoryInput = document.getElementById("category-input");
@@ -366,12 +366,15 @@ function addRenderResult() {
     }
 }
 
-let i = 1;
 let buttonDisabled = false;
 function handleSave(e) {
     e.preventDefault();
     const outputOption = document.getElementById("output-option");
-    const id = i++;
+    const id = Number(idInput.value.trim());
+    if (stateData.some((data) => data.id === id) === true) {
+        alert('ID sudah pernah disimpan, coba berikan ID unik lain');
+        return;
+    }
     const transactionName = transactionInput.value.trim();
     const typeTransactions = typeInput.value.trim();
     const category = outputOption.textContent.trim();
