@@ -14,7 +14,6 @@ let stateData = dataTransactions;
 let finalData = stateData.sort((a, b) => {
     return a.id - b.id;
 });
-console.log(stateData);
 const balanceState = loadBalanceController();
 const transactionsData = loadTransactions();
 
@@ -61,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let getBalance = loadBalanceController();
     if (getBalance) {
         const formatGet = getBalance.toLocaleString("id-ID");
-        console.log(formatGet);
         currentBalance = formatGet;
         // balanceDataThumb.remove();
         renderBalance();
@@ -77,21 +75,21 @@ function renderBalance() {
         return;
     }
     const balanceOutputWrap = document.createElement("section");
-    balanceOutputWrap.className = "balance-out relative rounded-2xl px-4 sm:max-w-sm lg:max-w-lg";
+    balanceOutputWrap.className = "balance-out flex flex-col relative bg-linear-to-r h-44 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
     balanceOutputWrap.id = "balance-out-section";
     balanceWrapper.appendChild(balanceOutputWrap);
     const balanceOutputData = document.createElement("p");
-    balanceOutputData.className = "pl-2 mt-6 text-sm text-gray-300 font-semibold font-1";
+    balanceOutputData.className = "text-sm text-shadow-lg text-gray-300 font-semibold font-1";
     balanceOutputData.id = "balance-out-data";
     balanceOutputData.textContent = `Wallet Balance`;
     balanceOutputWrap.appendChild(balanceOutputData);
-    let hideButton = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+    let hideButton = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
     </svg>
     `;
     const balanceOutputNominal = document.createElement("p");
-    balanceOutputNominal.className = "pl-2 text-3xl lg:text-4xl mt-1 mb-4 font-3";
+    balanceOutputNominal.className = "text-xl text-shadow-lg mt-1 lg:text-4xl font-3";
     balanceOutputNominal.id = "balance-out-nominal";
     balanceOutputNominal.textContent = `Rp. ${currentBalance.toLocaleString(`id-ID`)}`;
     balanceOutputWrap.appendChild(balanceOutputNominal);
@@ -99,7 +97,7 @@ function renderBalance() {
     hideNominal.id = "hide-nominal";
     hideNominal.type = "button";
     hideNominal.className =
-        "ml-2 bg-linear-to-bl from-green-600 to-emerald-900 border-t border-l border-white/40 border-b border-r border-black/60 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.1),_inset_-1px_-1px_2px_rgba(0,0,0,0.4)] rounded-xl p-1 absolute top-6 -translate-y-0.5 right-1/12 md:right-1/2 lg:right-1/2 translate-x-2";
+        "ml-2 bg-linear-to-bl from-green-600 to-emerald-900 border-t border-l border-white/40 border-b border-r border-black/60 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.1),_inset_-1px_-1px_2px_rgba(0,0,0,0.4)] rounded-xl p-1 absolute top-10 -translate-y-0.5 right-1/12 md:right-1/2 lg:right-1/2 translate-x-2";
     hideNominal.innerHTML = `${hideButton}`;
     balanceOutputWrap.appendChild(hideNominal);
     let isToggle = false;
@@ -109,14 +107,14 @@ function renderBalance() {
         const nominalOutput = document.getElementById("balance-out-nominal");
         if (isToggle) {
             nominalOutput.textContent = "Rp. -------";
-            hideButton = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            hideButton = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
             </svg>
             `;
             hideNominal.innerHTML = `${hideButton}`;
         } else {
             nominalOutput.textContent = `Rp. ${currentBalance.toLocaleString(`id-ID`)}`;
-            hideButton = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            hideButton = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>`;
@@ -124,7 +122,7 @@ function renderBalance() {
         }
     });
     const buttonSection = document.createElement("section");
-    buttonSection.className = "flex ml-1";
+    buttonSection.className = "flex ml-1 mt-8";
     balanceOutputWrap.appendChild(buttonSection);
     const editIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
@@ -135,7 +133,7 @@ function renderBalance() {
     editBalanceButton.id = "edit-balance";
     editBalanceButton.className =
         "p-3 gap-2 flex items-center justify-center w-sm bg-green-700 transition-colors duration-150 ease-in-out hover:bg-linear-to-r hover:from-green-700 hover:to-emerald-900 rounded-2xl text-slate-100 text-sm font-3 font-medium uppercase cursor-pointer ring-1 ring-white";
-    editBalanceButton.innerHTML = `Edit ${editIcon}`;
+    editBalanceButton.innerHTML = `${editIcon}`;
     const deleteIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
     </svg>
@@ -145,7 +143,7 @@ function renderBalance() {
     deleteBalanceButton.id = "delete-balance";
     deleteBalanceButton.className =
         "delete-balance p-3 gap-2 w-sm flex items-center transition-colors duration-150 ease-in-out justify-center ml-4 bg-red-500 hover:bg-linear-to-l hover:from-red-500 hover:to-red-800 font-3 font-medium text-sm uppercase rounded-2xl cursor-pointer ring-1 ring-white";
-    deleteBalanceButton.innerHTML = `Delete ${deleteIcon}`;
+    deleteBalanceButton.innerHTML = `${deleteIcon}`;
     buttonSection.appendChild(editBalanceButton);
     buttonSection.appendChild(deleteBalanceButton);
     const balanceEdit = document.getElementById("edit-balance");
@@ -156,7 +154,6 @@ function renderBalance() {
         balanceInputSection.classList.remove("hidden");
         balanceButton.classList.remove("invisible");
         balanceButton.textContent = "Update";
-        // fix bug edit button ketika di klik 2 kali form nya hilang
     });
     balanceDelete.addEventListener("click", (e) => {
         balanceOutputWrap.remove();
@@ -164,6 +161,10 @@ function renderBalance() {
         balanceInputSection.classList.remove("hidden");
         balanceButton.classList.remove("hidden");
     });
+    
+    // profit and loss section
+    const profitLossWrapper = document.createElement("section");
+    // lanjut besok 
 }
 
 balanceButton.addEventListener("click", (e) => {
@@ -300,8 +301,6 @@ function addRenderResult() {
     let dataRender = stateData.sort((a, b) => {
         return a.id - b.id;
     });
-    // console.log('Data asli', dataTrial);
-    console.log('Ini data buat render', dataRender);
     for (let i = 0; i < dataRender.length; i++) {
         const idResult = Number(dataRender[i].id);
         const nameResult = dataRender[i].transactionName;
@@ -433,7 +432,6 @@ function deleteEditConfiguration() {
         if (deleteBtn) {
             const id = parseInt(e.target.dataset.id);
             const delay = (ms) => new Promise(resolve => setTimeout(resolve,ms));
-            console.log('Clicked in outside');
             const handleDelete = async() => {
                 deleteClicked = true;
                 deleteBtn.innerHTML = `${loading} Loading`;
@@ -446,7 +444,6 @@ function deleteEditConfiguration() {
                     if (index !== -1) {
                         stateData.splice(index,1);
                     }
-                    console.log("After delete : ", stateData)
                     alert("Transaksi berhasil dihapus");
                     addRenderResult();
                 }
@@ -456,7 +453,7 @@ function deleteEditConfiguration() {
                 finally {
                     deleteClicked = false;
                 }
-                
+
             }
             handleDelete();
         }
@@ -479,7 +476,7 @@ saveButton.addEventListener("click", handleSave);
 
 function filterOutput() {
     const dataTrans = document.getElementsByClassName("type-result");
-    console.log(dataTrans);
+
 }
 
 function filterOperation() {
@@ -669,10 +666,6 @@ function graphSolution() {
         available = balanceValue - total;
     }
     const availableDisplay = available.toLocaleString("id-ID");
-    console.log(`Balance nya : ${balanceValue}`);
-    console.log(`Total nya : ${total}`);
-    console.log(`Persenan nya : ${percent}`);
-    const angle = ratio * 2 * Math.PI;
     const centerX = 110,
         centerY = 110,
         radius = 85;
@@ -685,6 +678,7 @@ function graphSolution() {
     ctx.lineWidth = 35;
     ctx.lineCap = "round";
     ctx.stroke();
+    const angle = ratio * 2 * Math.PI;
 
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, -0.5 * Math.PI, angle - 0.5 * Math.PI);
@@ -875,5 +869,3 @@ expandButton.addEventListener("click", (e) => {
     e.preventDefault();
     buttonExpanded.classList.toggle("invisible");
 });
-
-console.log(finalData);
