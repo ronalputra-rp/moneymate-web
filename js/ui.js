@@ -54,6 +54,7 @@ function newBalanceHandle(e) {
     balanceButton.classList.add("hidden");
     // balanceWrapper.classList.remove("hidden");
     renderBalance();
+    profitLossAnalysis();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -63,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentBalance = formatGet;
         // balanceDataThumb.remove();
         renderBalance();
+        profitLossAnalysis();
     }
     if (!document.getElementById("balance-out-section")) {
         balanceInputSection.classList.remove("hidden");
@@ -74,15 +76,19 @@ function renderBalance() {
     if (!currentBalance) {
         return;
     }
-    const balanceOutputWrap = document.createElement("section");
-    balanceOutputWrap.className = "balance-out flex flex-col relative bg-linear-to-r h-44 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
-    balanceOutputWrap.id = "balance-out-section";
-    balanceWrapper.appendChild(balanceOutputWrap);
+    const balanceOutputWrapper = document.createElement("section");
+    balanceOutputWrapper.id = "balance-out-wrapper";
+    balanceOutputWrapper.className = "col-start-1 col-end-5"
+    balanceWrapper.appendChild(balanceOutputWrapper)
+    const balanceOutputSection = document.createElement("section");
+    balanceOutputSection.className = "balance-out flex flex-col relative bg-linear-to-r h-44 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
+    balanceOutputSection.id = "balance-out-section";
+    balanceOutputWrapper.appendChild(balanceOutputSection);
     const balanceOutputData = document.createElement("p");
     balanceOutputData.className = "text-sm text-shadow-lg text-gray-300 font-semibold font-1";
     balanceOutputData.id = "balance-out-data";
     balanceOutputData.textContent = `Wallet Balance`;
-    balanceOutputWrap.appendChild(balanceOutputData);
+    balanceOutputSection.appendChild(balanceOutputData);
     let hideButton = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -92,14 +98,14 @@ function renderBalance() {
     balanceOutputNominal.className = "text-xl text-shadow-lg mt-1 lg:text-4xl font-3";
     balanceOutputNominal.id = "balance-out-nominal";
     balanceOutputNominal.textContent = `Rp. ${currentBalance.toLocaleString(`id-ID`)}`;
-    balanceOutputWrap.appendChild(balanceOutputNominal);
+    balanceOutputSection.appendChild(balanceOutputNominal);
     const hideNominal = document.createElement("button");
     hideNominal.id = "hide-nominal";
     hideNominal.type = "button";
     hideNominal.className =
         "ml-2 bg-linear-to-bl from-green-600 to-emerald-900 border-t border-l border-white/40 border-b border-r border-black/60 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.1),_inset_-1px_-1px_2px_rgba(0,0,0,0.4)] rounded-xl p-1 absolute top-10 -translate-y-0.5 right-1/12 md:right-1/2 lg:right-1/2 translate-x-2";
     hideNominal.innerHTML = `${hideButton}`;
-    balanceOutputWrap.appendChild(hideNominal);
+    balanceOutputSection.appendChild(hideNominal);
     let isToggle = false;
     hideNominal.addEventListener("click", (e) => {
         isToggle = !isToggle;
@@ -123,7 +129,7 @@ function renderBalance() {
     });
     const buttonSection = document.createElement("section");
     buttonSection.className = "flex ml-1 mt-8";
-    balanceOutputWrap.appendChild(buttonSection);
+    balanceOutputSection.appendChild(buttonSection);
     const editIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
     </svg>
@@ -150,13 +156,13 @@ function renderBalance() {
     const balanceDelete = document.getElementById("delete-balance");
     balanceEdit.addEventListener("click", (e) => {
         e.preventDefault();
-        balanceOutputWrap.classList.add("invisible");
+        balanceOutputSection.classList.add("invisible");
         balanceInputSection.classList.remove("hidden");
         balanceButton.classList.remove("invisible");
         balanceButton.textContent = "Update";
     });
     balanceDelete.addEventListener("click", (e) => {
-        balanceOutputWrap.remove();
+        balanceOutputSection.remove();
         deleteBalanceController();
         balanceInputSection.classList.remove("hidden");
         balanceButton.classList.remove("hidden");
@@ -164,12 +170,63 @@ function renderBalance() {
     
     // profit and loss section
     const profitLossWrapper = document.createElement("section");
-    // lanjut besok 
+    profitLossWrapper.id = "profit-loss-wrapper";
+    profitLossWrapper.className = "col-start-5 col-span-6"
+    balanceWrapper.appendChild(profitLossWrapper);
+    const profitContent = document.createElement("section");
+    profitContent.id = "profit-content"
+    profitContent.className = "bg-linear-to-r h-22 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
+    const profitTitle = document.createElement("p");
+    profitTitle.id = "profit-title"
+    profitTitle.className = "text-xs text-shadow-lg text-gray-300 font-semibold font-1"
+    profitTitle.textContent = "Profit"
+    const profitOutput = document.createElement("p");
+    profitOutput.id = "profit-output";
+    profitOutput.className = "text-xl";
+    profitLossWrapper.appendChild(profitContent);
+    profitContent.appendChild(profitTitle);
+    profitContent.appendChild(profitOutput);
+    const lossContent = document.createElement("section");
+    lossContent.id = "loss-content";
+    lossContent.className = "items-end mt-2 bg-linear-to-r h-21 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
+    const lossTitle = document.createElement("p");
+    lossTitle.id = "loss-title"
+    lossTitle.className = "text-xs text-shadow-lg text-gray-300 font-semibold font-1"
+    lossTitle.textContent = "Loss"
+    const lossOutput = document.createElement("p");
+    lossOutput.id = "loss-output";
+    lossOutput.className = "text-xl"
+    lossContent.appendChild(lossTitle);
+    lossContent.appendChild(lossOutput);
+
+    profitLossWrapper.appendChild(lossContent)
 }
 
 balanceButton.addEventListener("click", (e) => {
     newBalanceHandle(e);
 });
+
+function profitLossAnalysis() {
+    let loss = 0;
+    let profit = 0;
+    const filterForLoss = finalData.filter((item) => item.type === "Outcome");
+    const sumOutcome = filterForLoss.map((item) => loss += item.nominal);
+    const balance = loadBalanceController();
+    const lossOutput = document.getElementById("loss-output");
+    lossOutput.textContent = `${(loss).toLocaleString('id-ID')}`;
+    const filterForProfit = finalData.filter((item) => item.type === "Income");
+    const sumIncome = filterForProfit.map((item) => profit += item.nominal);
+    const profitOutput = document.getElementById("profit-output");
+    profitOutput.textContent = `${(profit).toLocaleString('id-ID')}`;
+    if (filterForLoss.length > 0) {
+        const updateBalance= document.getElementById("balance-out-nominal");
+        updateBalance.textContent = `${((balance - loss) + profit).toLocaleString('id-ID')}`;
+    }
+    else {
+        return;
+    }
+    // lanjut sabtu or minggu
+}
 
 function categoryConfiguration() {
     const categoryButton = document.getElementById("category");
@@ -252,7 +309,6 @@ categoryConfiguration();
 
 addButton.addEventListener("click", (e) => {
     e.preventDefault();
-    // wrapperRenderTransaction.innerHTML = "";
     inputSection.classList.toggle("hidden");
     inputForm.classList.remove("hidden");
     buttonExpanded.classList.add("invisible");
@@ -270,7 +326,6 @@ const selectCategory = document.getElementById("select-category");
 const outputSection = document.getElementById("output-section");
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-        // inputSection.classList.add("invisible");
         searchWrapper.classList.add("invisible");
         document.body.classList.remove("overflow-y-hidden");
         selectCategory.classList.remove("flex");
@@ -297,7 +352,6 @@ function addRenderResult() {
         month: "long",
         day: "numeric",
     };
-    // let dataTrial = stateData;
     let dataRender = stateData.sort((a, b) => {
         return a.id - b.id;
     });
@@ -405,7 +459,6 @@ function handleSave(e) {
     } else {
         editController(editingId, data);
     }
-    // wrapperRenderTransaction.innerHTML = "";
     setTimeout(() => {
         buttonDisabled = false;
         if (buttonDisabled === false) {
@@ -416,6 +469,7 @@ function handleSave(e) {
         alert("Data berhasil disimpan");
     }, 2000)
     addRenderResult();
+    profitLossAnalysis();
     buttonExpanded.classList.add("invisible");
     document.body.classList.remove("overflow-y-hidden");
 }
@@ -446,6 +500,7 @@ function deleteEditConfiguration() {
                     }
                     alert("Transaksi berhasil dihapus");
                     addRenderResult();
+                    profitLossAnalysis();
                 }
                 catch (error) {
                     console.error('Terjadi Error' +  error.message)
@@ -458,12 +513,12 @@ function deleteEditConfiguration() {
             handleDelete();
         }
         if (e.target.classList.contains("edit-button")) {
-            // wrapperRenderTransaction.innerHTML = "";
             saveButton.textContent = "Edit Transactions";
             inputSection.classList.toggle("hidden");
             inputForm.classList.remove("hidden");
             buttonExpanded.classList.add("invisible");
             editingId = id;
+            profitLossAnalysis();
         }
     });
 }
@@ -494,9 +549,6 @@ function filterOperation() {
     const filterSection = document.getElementById("filter-section");
     filterButton.addEventListener("click", (e) => {
         e.preventDefault();
-        // if (processFilterIncome === false && processFilterOutcome === false) {
-        //     wrapperRenderTransaction.innerHTML = "";
-        // }
         filterSection.classList.toggle("invisible");
     });
     filterIncome.addEventListener("click", (e) => {
@@ -669,7 +721,6 @@ function graphSolution() {
     const centerX = 110,
         centerY = 110,
         radius = 85;
-    // ctx.clearRect(0,0,200,200);
 
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -792,7 +843,6 @@ document.addEventListener("keydown", (e) => {
         day: "numeric",
     };
     if (e.key === "Enter") {
-        // document.body.classList.remove("overflow-y-hidden");
         wrapperRenderTransaction.innerHTML = "";
         const inputData = searchInput.value.trim();
         const searchData = finalData.find((x) => x.transactionName === inputData);
