@@ -1,7 +1,7 @@
 import {replaceData, dataTransactions, addTransactions,editTransactions, deleteTransactions, 
     getTransactions, addBalance, editBalance } from "./data.mjs";
 
-import { saveTransactions, loadTransactions, clearTransactions, saveBalance, loadBalance, clearBalance } from "./storage.mjs";
+import { saveTransactions, loadTransactions, clearTransactions, saveBalance, loadBalance, clearBalance,saveViewBalance,loadView } from "./storage.mjs";
 
 export function init() { 
     const savedData = loadTransactions();
@@ -39,6 +39,14 @@ export function editBalanceController(newValue) {
 
 export function deleteBalanceController() {
     clearBalance();
+}
+
+export function setStateView(data) {
+    saveViewBalance(data);
+}
+
+export function loadState() {
+    return loadView();
 }
 
 init();
