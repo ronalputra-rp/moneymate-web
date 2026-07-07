@@ -6,6 +6,7 @@ This project is currently under active development and will continue to evolve w
 
 ## 🌐 Live Demo
 Check out the live website: https://moneymate-tracker.netlify.app/
+The UI currently working in mobile device, will support an UI Desktop soon
 
 ## 🚧 Project Status
 
