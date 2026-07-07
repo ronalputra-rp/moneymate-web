@@ -2,6 +2,7 @@ import {replaceData ,dataTransactions, addTransactions, editTransactions, delete
     
 const STORAGE_KEY = "transactions";
 const STORAGE_BALANCE = "balance";
+const SHOW_BALANCE = "show-balance";
 
 export function saveTransactions (data) {
     localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
@@ -30,4 +31,13 @@ export function loadBalance () {
 
 export function clearBalance () {
     localStorage.removeItem(STORAGE_BALANCE);
+}
+
+export function saveViewBalance(state) {
+    localStorage.setItem(SHOW_BALANCE,state)
+}
+
+export function loadView() {
+    const data = localStorage.getItem(SHOW_BALANCE);
+    return JSON.parse(data);
 }
