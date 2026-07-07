@@ -6,8 +6,10 @@ import {
     loadBalanceController,
     editBalanceController,
     deleteBalanceController,
+    setStateView,
+    loadState,
 } from "./main.mjs";
-import { loadBalance, loadTransactions, saveBalance } from "./storage.mjs";
+import { loadBalance, loadTransactions, loadView, saveBalance } from "./storage.mjs";
 import { balance, dataTransactions, editBalance } from "./data.mjs";
 
 let stateData = dataTransactions;
@@ -16,7 +18,6 @@ let finalData = stateData.sort((a, b) => {
 });
 const balanceState = loadBalanceController();
 const transactionsData = loadTransactions();
-
 
 const balanceWrapper = document.getElementById("balance-wrapper");
 const balanceInputSection = document.getElementById("balance-section");
@@ -41,7 +42,6 @@ const buttonExpanded = document.getElementById("button-expanded");
 let editingId = null;
 
 let currentBalance = null;
-
 function newBalanceHandle(e) {
     e.preventDefault();
     const balanceValue = balanceInput.value.trim();
@@ -54,7 +54,6 @@ function newBalanceHandle(e) {
     balanceButton.classList.add("hidden");
     // balanceWrapper.classList.remove("hidden");
     renderBalance();
-    profitLossAnalysis();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -64,12 +63,23 @@ document.addEventListener("DOMContentLoaded", () => {
         currentBalance = formatGet;
         // balanceDataThumb.remove();
         renderBalance();
-        profitLossAnalysis();
     }
     if (!document.getElementById("balance-out-section")) {
         balanceInputSection.classList.remove("hidden");
     }
+    if (loadState() === true) {
+        const balanceOutput = document.getElementById("balance-out-nominal");
+        balanceOutput.textContent = `Rp. -------`;
+        const hideButton = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+            </svg>
+            `;
+        const hideNominal = document.getElementById("hide-nominal");
+        hideNominal.innerHTML = `${hideButton}`;
+    }
 });
+
+function profitLossAnalysis() {}
 
 function renderBalance() {
     balanceWrapper.innerHTML = "";
@@ -78,10 +88,11 @@ function renderBalance() {
     }
     const balanceOutputWrapper = document.createElement("section");
     balanceOutputWrapper.id = "balance-out-wrapper";
-    balanceOutputWrapper.className = "col-start-1 col-end-5"
-    balanceWrapper.appendChild(balanceOutputWrapper)
+    balanceOutputWrapper.className = "col-start-1 col-end-5";
+    balanceWrapper.appendChild(balanceOutputWrapper);
     const balanceOutputSection = document.createElement("section");
-    balanceOutputSection.className = "balance-out flex flex-col relative bg-linear-to-r h-44 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
+    balanceOutputSection.className =
+        "balance-out flex flex-col relative bg-linear-to-r h-44 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
     balanceOutputSection.id = "balance-out-section";
     balanceOutputWrapper.appendChild(balanceOutputSection);
     const balanceOutputData = document.createElement("p");
@@ -97,21 +108,38 @@ function renderBalance() {
     const balanceOutputNominal = document.createElement("p");
     balanceOutputNominal.className = "text-xl text-shadow-lg mt-1 lg:text-4xl font-3";
     balanceOutputNominal.id = "balance-out-nominal";
-    balanceOutputNominal.textContent = `Rp. ${currentBalance.toLocaleString(`id-ID`)}`;
+    // balanceOutputNominal.textContent = `Rp. ${currentBalance.toLocaleString(`id-ID`)}`;
     balanceOutputSection.appendChild(balanceOutputNominal);
     const hideNominal = document.createElement("button");
     hideNominal.id = "hide-nominal";
     hideNominal.type = "button";
     hideNominal.className =
-        "ml-2 bg-linear-to-bl from-green-600 to-emerald-900 border-t border-l border-white/40 border-b border-r border-black/60 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.1),_inset_-1px_-1px_2px_rgba(0,0,0,0.4)] rounded-xl p-1 absolute top-10 -translate-y-0.5 right-1/12 md:right-1/2 lg:right-1/2 translate-x-2";
+        "ml-2 bg-linear-to-bl from-green-600 fto-emerald-900 border-t border-l border-white/40 border-b border-r border-black/60 shadow-[inset_1px_1px_2px_rgba(255,255,255,0.1),_inset_-1px_-1px_2px_rgba(0,0,0,0.4)] rounded-xl p-1 absolute top-10 -translate-y-0.5 right-1/12 md:right-1/2 lg:right-1/2 translate-x-2";
     hideNominal.innerHTML = `${hideButton}`;
     balanceOutputSection.appendChild(hideNominal);
-    let isToggle = false;
+    let loss = 0;
+    let profit = 0;
+    const nominalOutput = document.getElementById("balance-out-nominal");
+    const current = Number(currentBalance) * 1000;
+    const filterForLoss = finalData.filter((item) => item.type === "Outcome");
+    const sumOutcome = filterForLoss.map((item) => (loss += item.nominal));
+    const filterForProfit = finalData.filter((item) => item.type === "Income");
+    const sumIncome = filterForProfit.map((item) => (profit += item.nominal));
+    const balanceCount = current - loss + profit;
+    if (filterForLoss.length > 0) {
+        const updateBalance = document.getElementById("balance-out-nominal");
+        updateBalance.textContent = `Rp. ${(current - loss + profit).toLocaleString("id-ID")}`;
+    } else {
+        return;
+    }
+
     hideNominal.addEventListener("click", (e) => {
-        isToggle = !isToggle;
         e.preventDefault();
         const nominalOutput = document.getElementById("balance-out-nominal");
-        if (isToggle) {
+        let state = loadState();
+        state = !state;
+        if (state === true) {
+            setStateView(true);
             nominalOutput.textContent = "Rp. -------";
             hideButton = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
@@ -119,7 +147,8 @@ function renderBalance() {
             `;
             hideNominal.innerHTML = `${hideButton}`;
         } else {
-            nominalOutput.textContent = `Rp. ${currentBalance.toLocaleString(`id-ID`)}`;
+            setStateView(false);
+            nominalOutput.textContent = `Rp. ${balanceCount.toLocaleString(`id-ID`)}`;
             hideButton = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -167,19 +196,20 @@ function renderBalance() {
         balanceInputSection.classList.remove("hidden");
         balanceButton.classList.remove("hidden");
     });
-    
+
     // profit and loss section
     const profitLossWrapper = document.createElement("section");
     profitLossWrapper.id = "profit-loss-wrapper";
-    profitLossWrapper.className = "col-start-5 col-span-6"
+    profitLossWrapper.className = "col-start-5 col-span-6";
     balanceWrapper.appendChild(profitLossWrapper);
     const profitContent = document.createElement("section");
-    profitContent.id = "profit-content"
-    profitContent.className = "bg-linear-to-r h-22 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
+    profitContent.id = "profit-content";
+    profitContent.className =
+        "bg-linear-to-r h-22 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
     const profitTitle = document.createElement("p");
-    profitTitle.id = "profit-title"
-    profitTitle.className = "text-xs text-shadow-lg text-gray-300 font-semibold font-1"
-    profitTitle.textContent = "Profit"
+    profitTitle.id = "profit-title";
+    profitTitle.className = "text-xs text-shadow-lg text-gray-300 font-semibold font-1";
+    profitTitle.textContent = "Profit";
     const profitOutput = document.createElement("p");
     profitOutput.id = "profit-output";
     profitOutput.className = "text-xl";
@@ -188,45 +218,30 @@ function renderBalance() {
     profitContent.appendChild(profitOutput);
     const lossContent = document.createElement("section");
     lossContent.id = "loss-content";
-    lossContent.className = "items-end mt-2 bg-linear-to-r h-21 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
+    lossContent.className =
+        "items-end mt-2 bg-linear-to-r h-21 from-emerald-600 to-emerald-800 rounded-2xl p-4 sm:min-w-sm lg:max-w-lg";
     const lossTitle = document.createElement("p");
-    lossTitle.id = "loss-title"
-    lossTitle.className = "text-xs text-shadow-lg text-gray-300 font-semibold font-1"
-    lossTitle.textContent = "Loss"
+    lossTitle.id = "loss-title";
+    lossTitle.className = "text-xs text-shadow-lg text-gray-300 font-semibold font-1";
+    lossTitle.textContent = "Loss";
     const lossOutput = document.createElement("p");
     lossOutput.id = "loss-output";
-    lossOutput.className = "text-xl"
+    lossOutput.className = "text-xl";
     lossContent.appendChild(lossTitle);
     lossContent.appendChild(lossOutput);
 
-    profitLossWrapper.appendChild(lossContent)
+    profitLossWrapper.appendChild(lossContent);
+    const lossValue = document.getElementById("loss-output");
+    lossValue.textContent = `${loss.toLocaleString("id-ID")}`;
+    const profitValue = document.getElementById("profit-output");
+    profitValue.textContent = `${profit.toLocaleString("id-ID")}`;
+    // profitLossAnalysis();
+    // console.log(document.getElementById('loss-output').textContent)
 }
 
 balanceButton.addEventListener("click", (e) => {
     newBalanceHandle(e);
 });
-
-function profitLossAnalysis() {
-    let loss = 0;
-    let profit = 0;
-    const filterForLoss = finalData.filter((item) => item.type === "Outcome");
-    const sumOutcome = filterForLoss.map((item) => loss += item.nominal);
-    const balance = loadBalanceController();
-    const lossOutput = document.getElementById("loss-output");
-    lossOutput.textContent = `${(loss).toLocaleString('id-ID')}`;
-    const filterForProfit = finalData.filter((item) => item.type === "Income");
-    const sumIncome = filterForProfit.map((item) => profit += item.nominal);
-    const profitOutput = document.getElementById("profit-output");
-    profitOutput.textContent = `${(profit).toLocaleString('id-ID')}`;
-    if (filterForLoss.length > 0) {
-        const updateBalance= document.getElementById("balance-out-nominal");
-        updateBalance.textContent = `${((balance - loss) + profit).toLocaleString('id-ID')}`;
-    }
-    else {
-        return;
-    }
-    // lanjut sabtu or minggu
-}
 
 function categoryConfiguration() {
     const categoryButton = document.getElementById("category");
@@ -366,6 +381,7 @@ function addRenderResult() {
         const dateParse = new Date(dateResult);
         const dateDisplay = dateParse.toLocaleDateString(`id-ID`, options);
 
+        // untuk bottom sheet aja
         const createResultSection = document.createElement("section");
         createResultSection.className =
             "data-trans bg-linear-to-bl my-2 from-green-600 to-neutral-900 shadow-sm inset-shadow-sm inset-shadow-lime-500 shadow-emerald-500/100 rounded-2xl sm:max-w-sm lg:max-w-xl hover:bg-emerald-600 hover:text-white";
@@ -425,7 +441,7 @@ function handleSave(e) {
     const outputOption = document.getElementById("output-option");
     const id = Number(idInput.value.trim());
     if (stateData.some((data) => data.id === id) === true) {
-        alert('ID sudah pernah disimpan, coba berikan ID unik lain');
+        alert("ID sudah pernah disimpan, coba berikan ID unik lain");
         return;
     }
     const transactionName = transactionInput.value.trim();
@@ -446,10 +462,10 @@ function handleSave(e) {
         const loading = `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" style="shape-rendering: auto; display: block; background: transparent;" width="200" height="200" xmlns:xlink="http://www.w3.org/1999/xlink"><g><circle stroke-dasharray="164.93361431346415 56.97787143782138" r="35" stroke-width="10" stroke="#ffffff" fill="none" cy="50" cx="50">
             <animateTransform keyTimes="0;1" values="0 50 50;360 50 50" dur="2.941176470588235s" repeatCount="indefinite" type="rotate" attributeName="transform"></animateTransform>
             </circle><g></g></g></svg>`;
-        saveButton.innerHTML = `${loading} Loading`
+        saveButton.innerHTML = `${loading} Loading`;
     }
     if (stateData.includes(id) === true) {
-        alert('Sudah terdapat data dengan ID yang sama !!');
+        alert("Sudah terdapat data dengan ID yang sama !!");
         inputSection.classList.add("hidden");
         inputForm.classList.add("hidden");
         return;
@@ -467,7 +483,7 @@ function handleSave(e) {
         inputSection.classList.add("hidden");
         inputForm.classList.add("hidden");
         alert("Data berhasil disimpan");
-    }, 2000)
+    }, 2000);
     addRenderResult();
     profitLossAnalysis();
     buttonExpanded.classList.add("invisible");
@@ -485,31 +501,25 @@ function deleteEditConfiguration() {
         </circle><g></g></g></svg>`;
         if (deleteBtn) {
             const id = parseInt(e.target.dataset.id);
-            const delay = (ms) => new Promise(resolve => setTimeout(resolve,ms));
-            const handleDelete = async() => {
+            const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+            const handleDelete = async () => {
                 deleteClicked = true;
                 deleteBtn.innerHTML = `${loading} Loading`;
                 try {
-                    await Promise.all([
-                        deleteController(id),
-                        delay(800)
-                    ])
-                    const index = stateData.findIndex(n => String(n.id) === String(id));
+                    await Promise.all([deleteController(id), delay(800)]);
+                    const index = stateData.findIndex((n) => String(n.id) === String(id));
                     if (index !== -1) {
-                        stateData.splice(index,1);
+                        stateData.splice(index, 1);
                     }
                     alert("Transaksi berhasil dihapus");
                     addRenderResult();
                     profitLossAnalysis();
-                }
-                catch (error) {
-                    console.error('Terjadi Error' +  error.message)
-                }
-                finally {
+                } catch (error) {
+                    console.error("Terjadi Error" + error.message);
+                } finally {
                     deleteClicked = false;
                 }
-
-            }
+            };
             handleDelete();
         }
         if (e.target.classList.contains("edit-button")) {
@@ -531,7 +541,6 @@ saveButton.addEventListener("click", handleSave);
 
 function filterOutput() {
     const dataTrans = document.getElementsByClassName("type-result");
-
 }
 
 function filterOperation() {
