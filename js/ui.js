@@ -79,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-function profitLossAnalysis() {}
 
 function renderBalance() {
     balanceWrapper.innerHTML = "";
@@ -235,8 +234,6 @@ function renderBalance() {
     lossValue.textContent = `${loss.toLocaleString("id-ID")}`;
     const profitValue = document.getElementById("profit-output");
     profitValue.textContent = `${profit.toLocaleString("id-ID")}`;
-    // profitLossAnalysis();
-    // console.log(document.getElementById('loss-output').textContent)
 }
 
 balanceButton.addEventListener("click", (e) => {
@@ -485,7 +482,7 @@ function handleSave(e) {
         alert("Data berhasil disimpan");
     }, 2000);
     addRenderResult();
-    profitLossAnalysis();
+    renderBalance();
     buttonExpanded.classList.add("invisible");
     document.body.classList.remove("overflow-y-hidden");
 }
@@ -513,7 +510,7 @@ function deleteEditConfiguration() {
                     }
                     alert("Transaksi berhasil dihapus");
                     addRenderResult();
-                    profitLossAnalysis();
+                    renderBalance();
                 } catch (error) {
                     console.error("Terjadi Error" + error.message);
                 } finally {
@@ -528,7 +525,6 @@ function deleteEditConfiguration() {
             inputForm.classList.remove("hidden");
             buttonExpanded.classList.add("invisible");
             editingId = id;
-            profitLossAnalysis();
         }
     });
 }
