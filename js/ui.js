@@ -510,7 +510,7 @@ function deleteEditConfiguration() {
                     }
                     alert("Transaksi berhasil dihapus");
                     addRenderResult();
-                    renderBalance():
+                    renderBalance();
                 } catch (error) {
                     console.error("Terjadi Error" + error.message);
                 } finally {
